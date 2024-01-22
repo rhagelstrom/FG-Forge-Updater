@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from requests import Session
 from bs4 import BeautifulSoup
+from requests import Session
 
 FORGE_URL = "https://forge.fantasygrounds.com"
 API_URL_BASE = f"{FORGE_URL}/api"
@@ -17,10 +17,10 @@ class Credentials:
 class ForgeCredentials(Credentials):
     session: Session
 
-    def get_auth_cookie(self):
+    def get_auth_cookie(self) -> str:
         return f"bb_userid={self.user_id}; bb_password={self.password}"
 
-    def get_csrf_token(self):
+    def get_csrf_token(self) -> str:
         response = self.session.get(
             f"{FORGE_URL}/crafter/manage-craft",
             headers={"Cookie": self.get_auth_cookie()},
@@ -31,12 +31,12 @@ class ForgeCredentials(Credentials):
 
 @dataclass(frozen=True)
 class ForgeCrafter:
-    session: Session
     creds: ForgeCredentials
     crafter_id: str
+    session: Session
     CRAFTER_API_URL = f"{API_URL_BASE}/crafter"
 
-    def get_creator_items(self):
+    def get_creator_items(self) -> dict:
         return self.session.get(
             f"{self.CRAFTER_API_URL}/items/{self.crafter_id}",
             headers={"Cookie": self.creds.get_auth_cookie()},
@@ -45,22 +45,22 @@ class ForgeCrafter:
 
 @dataclass(frozen=True)
 class ForgeItem:
-    session: Session
     creds: ForgeCredentials
     item_id: str
+    session: Session
     LIVE_CHANNEL = "1"
     TEST_CHANNEL = "2"
 
-    def get_item_api_url(self):
+    def get_item_api_url(self) -> str:
         return f"{API_URL_BASE}/crafter/items/{self.item_id}"
 
-    def get_item_data(self):
+    def get_item_data(self) -> dict:
         return self.session.get(
             self.get_item_api_url(),
             headers={"Cookie": self.creds.get_auth_cookie()},
         ).json()
 
-    def get_item_builds(self):
+    def get_item_builds(self) -> dict:
         return self.session.get(
             f"{self.get_item_api_url()}/builds/data-table",
             headers={"Cookie": self.creds.get_auth_cookie()},
