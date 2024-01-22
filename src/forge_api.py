@@ -1,9 +1,13 @@
+import logging
 from dataclasses import dataclass
+from pathlib import Path
 
 from requests import Session
 
 FORGE_URL = "https://forge.fantasygrounds.com"
 API_URL_BASE = f"{FORGE_URL}/api"
+
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s : %(levelname)s : %(message)s")
 
 
 class ReleaseChannel:
@@ -36,10 +40,11 @@ class ForgeCrafter:
     crafter_id: str
 
     def get_creator_items(self, session: Session) -> dict[str]:
-        return session.get(
+        response = session.get(
             f"{API_URL_BASE}/crafter/items/{self.crafter_id}",
             headers={"Cookie": self.creds.get_auth_cookies(session)},
-        ).json()
+        )
+        return response.json()
 
 
 @dataclass(frozen=True)
@@ -51,34 +56,33 @@ class ForgeItem:
         return f"{API_URL_BASE}/crafter/items/{self.item_id}"
 
     def get_item_data(self, session: Session) -> dict[str]:
-        return session.get(
+        response = session.get(
             self.get_item_api_url(),
             headers={"Cookie": self.creds.get_auth_cookies(session)},
-        ).json()
+        )
+        return response.json()
 
     def get_item_builds(self, session: Session) -> list[dict[str]]:
         headers = {
             "X-CSRF-Token": self.creds.get_csrf_token(session),
             "Cookie": self.creds.get_auth_cookies(session),
         }
-        return (
-            session.post(
-                f"{self.get_item_api_url()}/builds/data-table",
-                headers=headers,
-            )
-            .json()
-            .get("data")
+        response = session.post(
+            f"{self.get_item_api_url()}/builds/data-table",
+            headers=headers,
         )
+        return response.json().get("data")
 
-    def upload_item_build(self, new_build, session: Session) -> bool:
+    def upload_item_build(self, new_build: Path, session: Session) -> bool:
         headers = {
             "X-CSRF-Token": self.creds.get_csrf_token(session),
             "Cookie": self.creds.get_auth_cookies(session),
         }
+        upload_files = {"buildFiles": (new_build.name, new_build.read_bytes(), "application/vnd.novadigm.EXT")}
         response = session.post(
             f"{self.get_item_api_url()}/builds/upload",
             headers=headers,
-            files=({"buildFiles": (None, new_build)}),
+            files=upload_files,
         )
         return response.status_code == 200
 
