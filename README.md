@@ -27,7 +27,8 @@ You will need to create a `.env` file in the project folder containing the follo
 bb_userid=354681
 # md5 hash of your SmiteWorks account password
 bb_password=0800fc577294c34e0b28ad2839435945
-forge_item=33 # the item ID of the FantasyGrounds item you want to modify
+# the item ID of the FantasyGrounds item you want to modify
+forge_item=33
 # the value of the PHPSESSID cookie (get this by monitoring the network tab of the web inspector for a POST request while setting an item to LIVE)
 php_session_id=mk7294c34e0b28ad2839435945
 # the value of the X-CSRF-Token (get this from the "csrf-token" meta tag you can see here: view-source:https://forge.fantasygrounds.com/crafter/manage-craft).
