@@ -20,6 +20,10 @@ class ForgeCredentials(Credentials):
     def get_auth_cookie(self) -> str:
         return f"bb_userid={self.user_id}; bb_password={self.password}"
 
+    def get_php_session_id(self) -> str:
+        r = self.session.post(f"{FORGE_URL}/crafter/manage-craft", data={})
+        return f"PHPSESSID={r.cookies['PHPSESSID']}"
+
     def get_csrf_token(self) -> str:
         response = self.session.get(
             f"{FORGE_URL}/crafter/manage-craft",
