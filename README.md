@@ -39,7 +39,7 @@ upload_file=FG-PFRPG-Advanced-Effects.ext
 
 Once you have done that, you can run the following command from inside the project folder:
 ```shell
-python3 src/app/py
+python3 src/app.py
 ```
 
 ## Features
