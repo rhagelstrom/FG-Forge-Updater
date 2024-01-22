@@ -17,21 +17,11 @@ class ReleaseChannel:
 
 
 @dataclass(frozen=True)
-class Credentials:
+class ForgeCredentials:
     user_id: str
     password: str
-
-
-@dataclass(frozen=True)
-class ForgeCredentials(Credentials):
     csrf_token: str
     php_session_id: str
-
-    def get_auth_cookies(self, session: Session) -> str:
-        return f"PHPSESSID={self.php_session_id}; bb_userid={self.user_id}; bb_password={self.password}"
-
-    def get_csrf_token(self, session: Session) -> str:
-        return self.csrf_token
 
 
 @dataclass(frozen=True)
@@ -42,7 +32,6 @@ class ForgeCrafter:
     def get_creator_items(self, session: Session) -> dict[str]:
         response = session.get(
             f"{API_URL_BASE}/crafter/items/{self.crafter_id}",
-            headers={"Cookie": self.creds.get_auth_cookies(session)},
         )
         return response.json()
 
@@ -58,41 +47,42 @@ class ForgeItem:
     def get_item_data(self, session: Session) -> dict[str]:
         response = session.get(
             self.get_item_api_url(),
-            headers={"Cookie": self.creds.get_auth_cookies(session)},
         )
+        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
         return response.json()
 
     def get_item_builds(self, session: Session) -> list[dict[str]]:
         headers = {
-            "X-CSRF-Token": self.creds.get_csrf_token(session),
-            "Cookie": self.creds.get_auth_cookies(session),
+            "X-CSRF-Token": self.creds.csrf_token,
         }
         response = session.post(
             f"{self.get_item_api_url()}/builds/data-table",
             headers=headers,
         )
+        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
         return response.json().get("data")
 
     def upload_item_build(self, new_build: Path, session: Session) -> bool:
         headers = {
-            "X-CSRF-Token": self.creds.get_csrf_token(session),
-            "Cookie": self.creds.get_auth_cookies(session),
+            "X-CSRF-Token": self.creds.csrf_token,
         }
-        upload_files = {"buildFiles": (new_build.name, new_build.read_bytes(), "application/vnd.novadigm.EXT")}
+        upload_files = {"buildFiles[0]": (new_build.name, new_build.read_bytes(), "application/vnd.novadigm.EXT")}
         response = session.post(
             f"{self.get_item_api_url()}/builds/upload",
             headers=headers,
             files=upload_files,
         )
+        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
+        logging.debug(response.request.body)
         return response.status_code == 200
 
     def set_build_channel(self, build_id: str, channel: ReleaseChannel, session: Session) -> bool:
         headers = {
-            "X-CSRF-Token": self.creds.get_csrf_token(session),
-            "Cookie": self.creds.get_auth_cookies(session),
+            "X-CSRF-Token": self.creds.csrf_token,
         }
         response = session.post(
             f"{self.get_item_api_url()}/builds/{build_id}/channels/{channel}",
             headers=headers,
         )
+        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
         return response.status_code == 200
