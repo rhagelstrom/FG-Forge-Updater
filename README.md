@@ -37,7 +37,7 @@ csrf_token=327t287tg237cn7aks87xg827282374618273462873x3nf823bf871287f1xm186f18
 upload_file=FG-PFRPG-Advanced-Effects.ext
 ```
 
-
+Once you have done that, you can run the following command from inside the project folder:
 ```shell
 python3 src/app/py
 ```
