@@ -1,0 +1,33 @@
+[tool.ruff]
+line-length = 160
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+extend-select = ["B", "W", "C"]
+ignore = ["C400", "C401"]
+
+[project]
+name = "fg-forge-updater"
+version = "0.0.1"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { "file" = "LICENSE" }
+authors = [{ "name" = "bmos", "email" = "wil.thieme@protonmail.com" }]
+urls = { "GitHub" = "https://github.com/bmos/fg_forge_updater" }
+#dependencies = [
+#    "pytest==7.4.4"
+#]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit==3.6.0",
+    "pytest==7.4.4",
+    "ruff==0.1.14"
+]
+github-actions = [
+    "pytest==7.4.4",
+    "pytest-emoji==0.2.0",
+    "pytest-md==0.2.0",
+    "ruff==0.1.14",
+    "ydiff==1.2"
+]
