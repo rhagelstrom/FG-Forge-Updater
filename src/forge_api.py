@@ -28,7 +28,6 @@ class ForgeCredentials:
     user_id: str
     password: str
     php_session_id: str
-    session: Session
 
 
 @dataclass(frozen=True)
