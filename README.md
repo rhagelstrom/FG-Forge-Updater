@@ -2,7 +2,7 @@
 
 # Forge Updater
 
-Herein lies a Python module that will (someday) upload builds to the FantasyGrounds Forge automatically.
+Herein lies a Python module that will (someday) upload builds to the FantasyGrounds Forge automatically. It currently does not work.
 
 ## Getting Started
 
@@ -23,8 +23,7 @@ python3 -m pip install .
 
 ## Usage
 
-You will need to create a `.env` file in the project folder containing the following (but with your information):
-
+1. Create a `.env` file in the project folder containing the following (but with your information):
 ```env
 # your user ID on the SmiteWorks forum
 bb_userid=354681
@@ -37,9 +36,8 @@ php_session_id=mk7294c34e0b28ad2839435945
 # the name of the ext file you want to upload
 upload_file=FG-PFRPG-Advanced-Effects.ext
 ```
-
-Once you have done that, you can run the following command from inside the project folder:
-
+2. Put an ext file to upload into the project folder.
+3. Run the following command from inside the project folder:
 ```shell
 python3 src/app.py
 ```
