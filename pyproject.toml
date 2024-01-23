@@ -16,7 +16,7 @@ authors = [{ "name" = "bmos", "email" = "wil.thieme@protonmail.com" }]
 urls = { "GitHub" = "https://github.com/bmos/fg_forge_updater" }
 dependencies = [
     "beautifulsoup4==4.12.3",
-    "html5lib==1.1",
+    "lxml==5.1.0",
     "python-dotenv==1.0.0",
     "requests==2.31.0"
 ]

@@ -4,6 +4,7 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
+from bs4 import BeautifulSoup
 from requests import Session
 
 FORGE_URL = "https://forge.fantasygrounds.com"
@@ -20,14 +21,20 @@ class ReleaseChannel:
     NONE = "0"
 
 
-@dataclass(frozen=True)
+def get_csrf_token(page_text: str) -> str:
+    """Get the csrf token from the Forge homepage"""
+    soup = BeautifulSoup(page_text, "lxml")
+    return soup.select_one("meta[name='csrf-token']")["content"]
+
+
+@dataclass
 class ForgeCredentials:
     """Dataclass used to store the authentication credentials used on FG Forge"""
 
     user_id: str
     password: str
-    csrf_token: str
     php_session_id: str
+    session: Session = Session()
 
 
 @dataclass(frozen=True)
@@ -46,44 +53,44 @@ class ForgeItem:
         response = session.get(
             self.get_item_api_url(),
         )
-        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
         return response.json()
 
     def get_item_builds(self, session: Session) -> list[dict[str]]:
         """Retrieves a list of recent builds that have been uploaded to this Forge item"""
-        headers = {
-            "X-CSRF-Token": self.creds.csrf_token,
-        }
+        response = session.get(
+            f"{FORGE_URL}/crafter/manage-craft",
+        )
+        headers = {"X-CSRF-Token": get_csrf_token(response.text)}
         response = session.post(
             f"{self.get_item_api_url()}/builds/data-table",
             headers=headers,
         )
-        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
+        logging.debug(response.json())
         return response.json().get("data")
 
     def upload_item_build(self, new_build: Path, session: Session) -> bool:
         """Uploads a new build to this Forge item, returning True on 200 OK"""
-        headers = {
-            "X-CSRF-Token": self.creds.csrf_token,
-        }
+        response = session.get(
+            f"{FORGE_URL}/crafter/manage-craft",
+        )
+        headers = {"X-CSRF-Token": get_csrf_token(response.text)}
         upload_files = {"buildFiles[0]": (new_build.name, new_build.read_bytes(), "application/vnd.novadigm.EXT")}
         response = session.post(
             f"{self.get_item_api_url()}/builds/upload",
-            headers=headers,
             files=upload_files,
+            headers=headers,
         )
-        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
         logging.debug(response.request.body)
         return response.status_code == 200
 
     def set_build_channel(self, build_id: str, channel: ReleaseChannel, session: Session) -> bool:
         """Sets the build channel of this Forge item to the specified value, returning True on 200 OK"""
-        headers = {
-            "X-CSRF-Token": self.creds.csrf_token,
-        }
+        response = session.get(
+            f"{FORGE_URL}/crafter/manage-craft",
+        )
+        headers = {"X-CSRF-Token": get_csrf_token(response.text)}
         response = session.post(
             f"{self.get_item_api_url()}/builds/{build_id}/channels/{channel}",
             headers=headers,
         )
-        session.cookies.set("bb_sessionhash", response.cookies["bb_sessionhash"], path="/", domain=".fantasygrounds.com")
         return response.status_code == 200

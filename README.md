@@ -12,9 +12,11 @@ install the required packages by running the following commands from inside the 
 ```shell
 python3 -m venv venv
 ```
+
 ```shell
 source venv/bin/activate
 ```
+
 ```shell
 python3 -m pip install .
 ```
@@ -22,6 +24,7 @@ python3 -m pip install .
 ## Usage
 
 You will need to create a `.env` file in the project folder containing the following (but with your information):
+
 ```env
 # your user ID on the SmiteWorks forum
 bb_userid=354681
@@ -31,13 +34,12 @@ bb_password=0800fc577294c34e0b28ad2839435945
 forge_item=33
 # the value of the PHPSESSID cookie (get this by monitoring the network tab of the web inspector for a POST request while setting an item to LIVE)
 php_session_id=mk7294c34e0b28ad2839435945
-# the value of the X-CSRF-Token (get this from the "csrf-token" meta tag you can see here: view-source:https://forge.fantasygrounds.com/crafter/manage-craft).
-csrf_token=327t287tg237cn7aks87xg827282374618273462873x3nf823bf871287f1xm186f18
 # the name of the ext file you want to upload
 upload_file=FG-PFRPG-Advanced-Effects.ext
 ```
 
 Once you have done that, you can run the following command from inside the project folder:
+
 ```shell
 python3 src/app.py
 ```
