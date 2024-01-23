@@ -21,20 +21,14 @@ class ReleaseChannel:
     NONE = "0"
 
 
-def get_csrf_token(page_text: str) -> str:
-    """Get the csrf token from the Forge homepage"""
-    soup = BeautifulSoup(page_text, "lxml")
-    return soup.select_one("meta[name='csrf-token']")["content"]
-
-
-@dataclass
+@dataclass(frozen=True)
 class ForgeCredentials:
     """Dataclass used to store the authentication credentials used on FG Forge"""
 
     user_id: str
     password: str
     php_session_id: str
-    session: Session = Session()
+    session: Session
 
 
 @dataclass(frozen=True)
@@ -94,3 +88,9 @@ class ForgeItem:
             headers=headers,
         )
         return response.status_code == 200
+
+
+def get_csrf_token(page_text: str) -> str:
+    """Find and return the Cross-Site Request Forgery token from the meta tags of the provided html webpage"""
+    soup = BeautifulSoup(page_text, "lxml")
+    return soup.select_one("meta[name='csrf-token']")["content"]

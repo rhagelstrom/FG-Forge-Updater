@@ -19,13 +19,12 @@ def main() -> None:
 
         item = ForgeItem(creds, config.get("forge_item"))
 
-        # item.upload_item_build(Path(PurePath(__file__).parents[1], config.get("upload_file")), s)
+        item.upload_item_build(Path(PurePath(__file__).parents[1], config.get("upload_file")), s)
 
         item_builds = item.get_item_builds(s)  # get all builds for this item
         if item_builds:
             item_builds.sort(key=lambda k: k["build_num"], reverse=True)  # sort newest first
             item.set_build_channel(item_builds[0]["id"], ReleaseChannel.LIVE, s)  # assign newest build to live channel
-            logging.debug(item_builds)
 
 
 if __name__ == "__main__":
