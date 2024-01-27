@@ -1,30 +1,43 @@
+import hashlib
 import logging
 from pathlib import Path, PurePath
 
-import requests
 from dotenv import dotenv_values
+from requestium import Session
+from selenium import webdriver
 
-from src.forge_api import ForgeItem, ForgeCredentials, ReleaseChannel
+from forge_api import ForgeItem, ForgeCredentials, ReleaseChannel
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s : %(levelname)s : %(message)s")
 
 
+def upload_make_live(session: Session, item: ForgeItem, new_file: Path) -> None:
+    item.open_manage_item_page(session)
+    # item.upload_item_build(session, new_file)
+
+    item_builds = item.get_item_builds(session)  # get all builds for this item
+    # if not item_builds:
+    #    Exception("No builds found for item")
+    #
+    #    item_builds.sort(key=lambda k: k["build_num"], reverse=True)  # sort newest first
+    #    item.set_build_channel(item_builds[0]["id"], ReleaseChannel.LIVE, session)  # assign newest build to live channel
+
+
 def main() -> None:
     config = dotenv_values(Path(PurePath(__file__).parents[1], ".env"))
-    with requests.Session() as s:
-        # TODO: Add functionality to automatically obtain php_session_id
-        creds = ForgeCredentials(config.get("bb_userid"), config.get("bb_password"), config.get("php_session_id"))
+    pass_md5 = hashlib.md5(config.get("password").encode("utf-8")).hexdigest()
+    creds = ForgeCredentials(config.get("user_id"), config.get("username"), config.get("password"), pass_md5)
 
-        s.cookies.update(requests.utils.cookiejar_from_dict({"PHPSESSID": creds.php_session_id, "bb_userid": creds.user_id, "bb_password": creds.password}))
+    item = ForgeItem(creds, config.get("item_id"))
 
-        item = ForgeItem(creds, config.get("forge_item"))
+    with Session(driver=webdriver.Chrome(), headless=True) as session:
+        session.copy_user_agent_from_driver()
+        session.cookies.set(name="bb_userid", value=creds.user_id, domain=".fantasygrounds.com")
+        session.cookies.set(name="bb_password", value=creds.password_md5, domain=".fantasygrounds.com")
 
-        # item.upload_item_build(Path(PurePath(__file__).parents[1], config.get("upload_file")), s)
-
-        item_builds = item.get_item_builds(s)  # get all builds for this item
-        if item_builds:
-            item_builds.sort(key=lambda k: k["build_num"], reverse=True)  # sort newest first
-            item.set_build_channel(item_builds[0]["id"], ReleaseChannel.LIVE, s)  # assign newest build to live channel
+        new_file = Path(PurePath(__file__).parents[1], config.get("upload_file"))
+        logging.debug("File upload path determined to be: %s", new_file)
+        upload_make_live(session, item, new_file)
 
 
 if __name__ == "__main__":
