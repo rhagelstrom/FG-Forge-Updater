@@ -18,5 +18,5 @@ pre-commit install
 
 ## Code Submissions
 
-If your text editor doesn't support [.editorconfig](https://editorconfig.org/), please reference the [.editorconfig](.editorconfig) file for some basic formatting norms.
+If your text editor doesn't support [.editorconfig](https://editorconfig.org/), please reference the [.editorconfig](.editorconfig file) for some basic formatting norms.
 Regardless, `ruff format .` should be run to standardize formatting before attempting to commit.
