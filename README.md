@@ -28,7 +28,7 @@ python3 -m pip install .
 
 1. Create a `.env` file in the project folder containing the following (but with your information):
 ```env
-# your user ID on the FG forum
+# your FG forum user ID (you can get this from the URL of your profile)
 bb_userid=354681
 # your FG forum username
 username=**********
