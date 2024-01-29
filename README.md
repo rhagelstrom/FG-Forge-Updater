@@ -2,10 +2,8 @@
 
 # Forge Updater
 
-Herein lies a Python module that will (someday) upload builds to the FantasyGrounds Forge automatically.
-
-> [!CAUTION]
-> It currently does not work.
+Herein lies a Python module that will upload builds to the FantasyGrounds Forge automatically via automation of a Chrome
+browser instance.
 
 ## Getting Started
 
