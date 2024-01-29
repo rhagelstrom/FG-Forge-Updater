@@ -1,4 +1,5 @@
 """Provides classes for authenticating to and managing items on the FantasyGrounds Forge marketplace"""
+
 import logging
 import time
 from dataclasses import dataclass

@@ -1,6 +1,7 @@
 """Performs drag/drop of a file into a dropzone div"""
 
 from pathlib import Path
+
 from selenium.webdriver.remote.webelement import WebElement
 
 # Thanks to Roman - https://stackoverflow.com/posts/53108153/revisions
