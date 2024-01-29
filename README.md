@@ -27,20 +27,26 @@ python3 -m pip install .
 ## Usage
 
 1. Create a `.env` file in the project folder containing the following (but with your information):
+
+> [!NOTE]
+> You can add these values directly to your environment variables.
+
 ```env
 # your FG forum user ID (you can get this from the URL of your profile)
-bb_userid=354681
+FG_USER_ID=354681
 # your FG forum username
-username=**********
+FG_USER_NAME=**********
 # your FG forum password
-bb_password=**********
+FG_USER_PASS=**********
 # the item ID of the FG Forge item you want to modify
-forge_item=33
+FG_ITEM_ID=33
 # the name of the ext file you want to upload
-upload_file=FG-PFRPG-Advanced-Effects.ext
+FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
 ```
+
 2. Put an ext file to upload into the project folder.
 3. Run the following command from inside the project folder:
+
 ```shell
 python3 src/app.py
 ```
