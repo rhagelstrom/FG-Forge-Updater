@@ -5,6 +5,9 @@
 Herein lies a Python module that will upload builds to the FantasyGrounds Forge automatically via automation of a Chrome
 browser instance.
 
+> [!WARNING]
+> At the moment, this will only work for the first page of 100 items found on a Forge account.
+
 ## Getting Started
 
 To run this code, you'll need to have Python 3.9, 3.10, 3.11, or 3.12 installed on your machine. You'll also need to
