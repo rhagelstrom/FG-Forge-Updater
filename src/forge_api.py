@@ -12,7 +12,7 @@ from selenium.webdriver.support.select import Select
 
 from drop_file import drag_and_drop_file
 
-logging.basicConfig(level=logging.DEBUG, format="%(asctime)s : %(levelname)s : %(message)s")
+logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
 SPEED_INTERVAL = 3
 
