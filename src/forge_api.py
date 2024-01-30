@@ -97,10 +97,10 @@ class ForgeItem:
 
         try:
             # raise an exception if dropzone shows an error message
-            dropzone_error_div = driver.find_element(By.XPATH, "//div[@class='dz-error-message']")
-            if dropzone_error_div.is_displayed():
+            dropzone_error_div = driver.find_element(By.CLASS_NAME, "dz-error-message")
+            if dropzone_error_div.value_of_css_property("display") == "block":
                 dropzone_error = dropzone_error_div.find_element(By.TAG_NAME, "span")
-                raise Exception(dropzone_error.text)
+                raise Exception(dropzone_error.get_attribute("innerHTML"))
         except NoSuchElementException:
             pass
 

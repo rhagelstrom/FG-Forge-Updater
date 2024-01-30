@@ -27,7 +27,7 @@ def main() -> None:
     logging.debug("File upload path determined to be: %s", new_file)
 
     options = webdriver.ChromeOptions()
-    options.add_argument('--remote-debugging-port=9222')
+    options.add_argument("--remote-debugging-port=9222")
     options.add_argument("--headless=new")
     with webdriver.Chrome(service=Service(), options=options) as driver:
         driver.set_window_size(1920, 1200)
