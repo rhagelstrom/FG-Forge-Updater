@@ -83,6 +83,8 @@ class ForgeItem:
         except NoSuchElementException:
             raise Exception("File drag and drop didn't work!")
 
+        print(f"window size: {driver.get_window_size()}")
+
         # Click dropzone submit button
         driver.find_element(By.ID, "submit-build-button").click()
         time.sleep(SPEED_INTERVAL * 2)

@@ -30,7 +30,6 @@ def main() -> None:
     options.add_argument("--remote-debugging-port=9222")
     options.add_argument("--headless=new")
     with webdriver.Chrome(service=Service(), options=options) as driver:
-        driver.set_window_size(1920, 1200)
         upload_make_live(driver, item, new_file)
 
 
