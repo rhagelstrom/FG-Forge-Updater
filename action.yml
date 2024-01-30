@@ -1,0 +1,59 @@
+name: Upload Release as Forge Build
+
+on:
+  workflow_call:
+    inputs:
+      FG_UL_FILE:
+        required: true
+        type: string
+    secrets:
+      user_id:
+        required: true
+      user_name:
+        required: true
+      password:
+        required: true
+      item_id:
+        required: true
+      file_name:
+        required: true
+
+env:
+    FG_USER_ID: ${{ secrets.user_id }}
+    FG_USER_NAME: ${{ secrets.user_name }}
+    FG_USER_PASS: ${{ secrets.password }}
+    FG_ITEM_ID: ${{ secrets.item_id }}
+    FG_UL_FILE: ${{ secrets.file_name }}
+
+jobs:
+  print_context:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          EVENT_CONTEXT: ${{ toJSON(github.event) }}
+        run: |
+          echo $EVENT_CONTEXT
+          
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install general dependencies
+        run: |
+          pip install -U pip
+          pip install .
+
+      - name: Install Chrome
+        run: |
+          sudo apt install chrome
+
+      - name: Upload ext file to FG Forge
+        run: |
+          python src/main.py
