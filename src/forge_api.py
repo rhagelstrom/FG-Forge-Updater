@@ -14,7 +14,7 @@ from drop_file import drag_and_drop_file
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
-SPEED_INTERVAL = 3
+SPEED_INTERVAL = 2
 
 
 class ForgeURLs:
@@ -94,12 +94,21 @@ class ForgeItem:
 
         # Click dropzone submit button
         driver.find_element(By.ID, "submit-build-button").click()
-        time.sleep(SPEED_INTERVAL * 30)
+        time.sleep(SPEED_INTERVAL * 2)
 
-        # Check if files are gone
         try:
-            driver.find_element(By.CLASS_NAME, "dz-filename")
-            raise Exception("File did not upload correctly!")
+            # raise an exception based on the toast message, if displayed
+            driver.find_element(By.XPATH, "//*[@class='toast toast-error']")
+            toast_message = driver.find_element(By.XPATH, "//div[@class='toast-message']")
+            raise Exception(toast_message.text)
+        except NoSuchElementException:
+            pass
+
+        try:
+            # raise an exception if the file is still uploading after sleeping
+            upload_width = driver.find_element(By.XPATH, "//span[@class='dz-upload']").value_of_css_property("width")
+            upload_progress = float(upload_width.replace("px", ""))
+            raise Exception("File upload timed out at {:.0f}%".format(upload_progress))
         except NoSuchElementException:
             pass
 
