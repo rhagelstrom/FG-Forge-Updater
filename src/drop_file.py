@@ -38,5 +38,6 @@ JS_DROP_FILE = """
 def drag_and_drop_file(drop_target: WebElement, path: Path):
     """Performs drag/drop of a file into a dropzone div"""
     driver = drop_target.parent
+    print(f"drag_and_drop_file: {str(path)}")
     file_input = driver.execute_script(JS_DROP_FILE, drop_target, 0, 0)
     file_input.send_keys(str(path))
