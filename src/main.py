@@ -26,7 +26,9 @@ def main() -> None:
     new_file = Path(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
     logging.debug("File upload path determined to be: %s", new_file)
 
-    with webdriver.Chrome(service=Service(), options=webdriver.ChromeOptions()) as driver:
+    options = webdriver.ChromeOptions()
+    options.add_argument('--remote-debugging-port=9222')
+    with webdriver.Chrome(service=Service(), options=options) as driver:
         upload_make_live(driver, item, new_file)
 
 
