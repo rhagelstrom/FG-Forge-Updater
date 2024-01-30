@@ -5,9 +5,7 @@ from pathlib import Path, PurePath
 
 from dotenv import load_dotenv
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromiumService
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
+from selenium.webdriver.chrome.service import Service
 
 from forge_api import ForgeItem, ForgeCredentials, ForgeURLs
 
@@ -27,7 +25,8 @@ def main() -> None:
     item = ForgeItem(creds, os.environ["FG_ITEM_ID"])
     new_file = Path(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
     logging.debug("File upload path determined to be: %s", new_file)
-    with webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install())) as driver:
+
+    with webdriver.Chrome(service=Service(), options=webdriver.ChromeOptions()) as driver:
         upload_make_live(driver, item, new_file)
 
 
