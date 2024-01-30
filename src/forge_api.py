@@ -60,7 +60,7 @@ class ForgeItem:
             username_field.send_keys(self.creds.username)
             password_field.send_keys(self.creds.password)
             password_field.submit()
-            time.sleep(SPEED_INTERVAL * 2)
+            time.sleep(SPEED_INTERVAL * 3)
         try:
             driver.find_element(By.ID, "item-list-content")
         except NoSuchElementException:
@@ -94,7 +94,7 @@ class ForgeItem:
 
         # Click dropzone submit button
         driver.find_element(By.ID, "submit-build-button").click()
-        time.sleep(SPEED_INTERVAL * 5)
+        time.sleep(SPEED_INTERVAL * 30)
 
         # Check if files are gone
         try:
