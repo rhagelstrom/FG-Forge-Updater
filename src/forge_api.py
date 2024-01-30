@@ -35,15 +35,6 @@ class ForgeCredentials:
 
 
 @dataclass(frozen=True)
-class ReleaseChannel:
-    """Constants representing the numeric strings used to represent each release channel"""
-
-    LIVE = "1"
-    TEST = "2"
-    NONE = "0"
-
-
-@dataclass(frozen=True)
 class ForgeItem:
     """Dataclass used to interact with an item on the FG Forge"""
 
