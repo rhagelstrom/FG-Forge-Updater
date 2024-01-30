@@ -3,7 +3,7 @@ name: Upload Release as Forge Build
 on:
   workflow_call:
     inputs:
-      FG_UL_FILE:
+      file_name:
         required: true
         type: string
     secrets:
@@ -14,8 +14,6 @@ on:
       password:
         required: true
       item_id:
-        required: true
-      file_name:
         required: true
 
 env:
