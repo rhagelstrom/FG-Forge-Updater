@@ -88,7 +88,7 @@ class ForgeItem:
 
         # Check if files are there
         try:
-            driver.find_element(By.CLASS_NAME, "dz-filename")
+            driver.find_element(By.CLASS_NAME, "dz-upload")
         except NoSuchElementException:
             raise Exception("File drag and drop didn't work!")
 
@@ -99,15 +99,16 @@ class ForgeItem:
         try:
             # raise an exception based on the toast message, if displayed
             driver.find_element(By.XPATH, "//*[@class='toast toast-error']")
-            toast_message = driver.find_element(By.XPATH, "//div[@class='toast-message']")
+            toast_message = driver.find_element(By.CLASS_NAME, "toast-message")
             raise Exception(toast_message.text)
         except NoSuchElementException:
             pass
 
         try:
             # raise an exception if the file is still uploading after sleeping
-            upload_width = driver.find_element(By.XPATH, "//span[@class='dz-upload']").value_of_css_property("width")
-            upload_progress = float(upload_width.replace("px", ""))
+            upload_progress_bar_width_filled = driver.find_element(By.CLASS_NAME, "dz-upload").value_of_css_property("width").replace("px", "")
+            upload_progress_bar_width = driver.find_element(By.CLASS_NAME, "dz-progress").value_of_css_property("width").replace("px", "")
+            upload_progress = float(upload_progress_bar_width_filled) / float(upload_progress_bar_width)
             raise Exception("File upload timed out at {:.0f}%".format(upload_progress))
         except NoSuchElementException:
             pass
