@@ -105,6 +105,13 @@ class ForgeItem:
             pass
 
         try:
+            # raise an exception if dropzone shows an error message
+            dropzone_error = driver.find_element(By.XPATH, "//span[@data-dz-errormessage='']")
+            raise Exception(dropzone_error.text)
+        except NoSuchElementException:
+            pass
+
+        try:
             # raise an exception if the file is still uploading after sleeping
             upload_progress_bar_width_filled = driver.find_element(By.CLASS_NAME, "dz-upload").value_of_css_property("width").replace("px", "")
             upload_progress_bar_width = driver.find_element(By.CLASS_NAME, "dz-progress").value_of_css_property("width").replace("px", "")
