@@ -16,7 +16,8 @@ authors = [{ "name" = "bmos", "email" = "wil.thieme@protonmail.com" }]
 urls = { "GitHub" = "https://github.com/bmos/fg_forge_updater" }
 dependencies = [
     "python-dotenv==1.0.1",
-    "selenium==4.17.2"
+    "selenium==4.17.2",
+    "webdriver-manager==4.0.1"
 ]
 
 [project.optional-dependencies]
