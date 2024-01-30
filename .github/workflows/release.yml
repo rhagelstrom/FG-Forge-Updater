@@ -24,19 +24,13 @@ env:
     FG_UL_FILE: ${{ secrets.file_name }}
 
 jobs:
-  print_context:
+  upload-release:
     runs-on: ubuntu-latest
     steps:
-      - env:
-          EVENT_CONTEXT: ${{ toJSON(github.event) }}
-        run: |
-          echo $EVENT_CONTEXT
-          
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
+      - name: Checkout FG-Forge-Updater repository
         uses: actions/checkout@v4
+        with:
+          repository: 'bmos/FG-Forge-Updater'
 
       - name: Set up python 3.12
         uses: actions/setup-python@v5
