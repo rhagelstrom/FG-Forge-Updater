@@ -18,5 +18,11 @@ pre-commit install
 
 ## Code Submissions
 
+### Style
+
 If your text editor doesn't support [.editorconfig](https://editorconfig.org/), please reference the [.editorconfig file](.editorconfig) for some basic formatting norms.
 Regardless, `ruff format .` should be run to standardize formatting before attempting to commit.
+
+### Tests
+
+Pytest is used to simplify testing and avoid committing broken code. Before committing, please run `pytest` in the project folder and resolve any errors.
