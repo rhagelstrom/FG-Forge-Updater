@@ -30,7 +30,7 @@ def get_build_file(file_path: PurePath, env_file: str) -> Path:
     new_file = Path(file_path, env_file)
     logging.debug("File upload path determined to be: %s", new_file)
     if not new_file.is_file():
-        raise Exception(f"File at {str(new_file)} is not found.")
+        raise FileNotFoundError(f"File at {str(new_file)} is not found.")
     return new_file
 
 

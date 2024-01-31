@@ -10,10 +10,10 @@ def test_get_build_file() -> None:
 
 
 def test_get_build_file_path_is_not_folder() -> None:
-    with pytest.raises(Exception):
+    with pytest.raises(FileNotFoundError):
         get_build_file(PurePath(__file__), PurePath(__file__).name)
 
 
 def test_get_build_file_does_not_exist() -> None:
-    with pytest.raises(Exception):
+    with pytest.raises(FileNotFoundError):
         get_build_file(PurePath(__file__).parents[1], "file-does-not-exist")
