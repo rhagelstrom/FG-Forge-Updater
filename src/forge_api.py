@@ -1,20 +1,21 @@
 """Provides classes for authenticating to and managing items on the FantasyGrounds Forge marketplace"""
 
 import logging
-import time
 from dataclasses import dataclass
 from pathlib import Path
 
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
+from dropzone import DropzoneErrorHandling, drag_build_to_dropzone
+
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
-TIMEOUT = 15
+TIMEOUT: float = 15
 
 
 class ForgeURLs:
@@ -41,8 +42,8 @@ class ForgeItem:
     creds: ForgeCredentials
     item_id: str
 
-    def open_manage_item_page(self, driver: webdriver, urls: ForgeURLs) -> None:
-        """Navigate to the manage-craft/ page, login if needed, and set the per-page item count to 100"""
+    def login(self, driver: webdriver, urls: ForgeURLs) -> None:
+        """Open manage-craft and login if prompted"""
         driver.get(urls.MANAGE_CRAFT)
 
         try:
@@ -55,6 +56,11 @@ class ForgeItem:
         except TimeoutException:
             pass
 
+    @staticmethod
+    def open_items_list(driver: webdriver, urls: ForgeURLs) -> None:
+        """Open the manage craft page, raising an exception if the item table size selector isn't found."""
+        driver.get(urls.MANAGE_CRAFT)
+
         try:
             WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.NAME, "items-table_length")))
             items_per_page = Select(driver.find_element(By.NAME, "items-table_length"))
@@ -62,6 +68,9 @@ class ForgeItem:
         except TimeoutException:
             raise Exception("Could not load the Manage Craft page!")
 
+    def open_item_page(self, driver: webdriver) -> None:
+        """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
+
         try:
             WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link = driver.find_element(By.XPATH, f"//a[@data-item-id='{self.item_id}']")
@@ -69,65 +78,24 @@ class ForgeItem:
         except TimeoutException:
             raise Exception("Could not find item page, is FORGE_ITEM_ID correct?")
 
-    def upload_item_build(self, driver: webdriver, new_build: Path, urls: ForgeURLs) -> None:
-        """Uploads a new build to this Forge item, returning True if successful"""
+    @staticmethod
+    def add_build(driver: webdriver, new_build: Path) -> None:
+        """Uploads a new build to this Forge item, raising an exception if the new_build isn't added to the dropzone or doesn't upload successfully."""
 
-        if not new_build.is_file():
-            raise Exception(f"File at {str(new_build)} is not found.")
-
-        WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-build-uploads-tab']")))
-        uploads_tab = driver.find_element(By.XPATH, "//a[@id='manage-build-uploads-tab']")
-        uploads_tab.click()
-
-        WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-hidden-input")))
-        time.sleep(0.5)
-        dz_inputs = driver.find_elements(By.CLASS_NAME, "dz-hidden-input")
-        dz_inputs[1].send_keys(str(new_build))
-
-        try:
-            WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-upload")))
-        except TimeoutException:
-            raise Exception("File drag and drop didn't work!")
+        drag_build_to_dropzone(driver, TIMEOUT, new_build)
 
         WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button = driver.find_element(By.ID, "submit-build-button")
         submit_button.click()
 
-        try:
-            WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.XPATH, "//*[@class='toast toast-error']")))
-            toast_error_box = driver.find_element(By.XPATH, "//*[@class='toast toast-error']")
-            toast_message = toast_error_box.find_element(By.CLASS_NAME, "toast-message").text
-            raise Exception(toast_message)
-        except TimeoutException:
-            pass
+        dropzone_errors = DropzoneErrorHandling(driver, TIMEOUT)
+        dropzone_errors.check_report_toast_error()
+        dropzone_errors.check_report_dropzone_upload_error()
+        dropzone_errors.check_report_upload_percentage()
 
-        try:
-            WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-error-message")))
-            dropzone_error_box = driver.find_element(By.CLASS_NAME, "dz-error-message")
-            dropzone_error_box_visible = bool(dropzone_error_box.value_of_css_property("display") == "block")
-            if dropzone_error_box_visible:
-                dropzone_error_message = dropzone_error_box.find_element(By.TAG_NAME, "span").get_attribute("innerHTML")
-                raise Exception(dropzone_error_message)
-        except TimeoutException:
-            pass
-
-        try:
-            upload_progress_bar = driver.find_element(By.CLASS_NAME, "dz-upload")
-            upload_progress_bar_width_filled = upload_progress_bar.value_of_css_property("width").replace("px", "")
-            upload_progress_bar_width = driver.find_element(By.CLASS_NAME, "dz-progress").value_of_css_property("width").replace("px", "")
-            upload_progress = float(upload_progress_bar_width_filled) / float(upload_progress_bar_width)
-            raise Exception("File upload timed out at {:.0f}%".format(upload_progress))
-        except NoSuchElementException:
-            pass
-
-        driver.get(urls.MANAGE_CRAFT)
-
-        try:
-            WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
-            item_link = driver.find_element(By.XPATH, f"//a[@data-item-id='{self.item_id}']")
-            item_link.click()
-        except TimeoutException:
-            raise Exception("Could not find item page, is FORGE_ITEM_ID correct?")
+    @staticmethod
+    def set_latest_build_live(driver: webdriver) -> None:
+        """Set the latest build as active on the Live release channel, raising an exception if the build selector isn't found."""
 
         try:
             WebDriverWait(driver, TIMEOUT).until(
