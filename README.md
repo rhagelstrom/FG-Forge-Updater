@@ -33,8 +33,6 @@ python3 -m pip install .
 > You can add these values directly to your environment variables.
 
 ```env
-# your FG forum user ID (you can get this from the URL of your profile)
-FG_USER_ID=354681
 # your FG forum username
 FG_USER_NAME=**********
 # your FG forum password

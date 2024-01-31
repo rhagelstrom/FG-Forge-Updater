@@ -37,7 +37,7 @@ def get_build_file(file_path: PurePath, env_file: str) -> Path:
 def main() -> None:
     """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
     new_file = get_build_file(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
-    creds = ForgeCredentials(os.environ["FG_USER_ID"], os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
+    creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
     item = ForgeItem(creds, os.environ["FG_ITEM_ID"], timeout=TIMEOUT_SECONDS)
     urls = ForgeURLs()
 

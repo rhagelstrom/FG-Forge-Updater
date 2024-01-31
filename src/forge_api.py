@@ -36,7 +36,6 @@ class ReleaseChannel:
 class ForgeCredentials:
     """Dataclass used to store the authentication credentials used on FG Forge"""
 
-    user_id: str
     username: str
     password: str
 
