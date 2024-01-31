@@ -75,8 +75,8 @@ class ForgeItem:
         if not new_build.is_file():
             raise Exception(f"File at {str(new_build)} is not found.")
 
-        WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.ID, "manage-build-uploads-tab")))
-        uploads_tab = driver.find_element(By.ID, "manage-build-uploads-tab")
+        WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-build-uploads-tab']")))
+        uploads_tab = driver.find_element(By.XPATH, "//a[@id='manage-build-uploads-tab']")
         uploads_tab.click()
 
         WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-hidden-input")))
