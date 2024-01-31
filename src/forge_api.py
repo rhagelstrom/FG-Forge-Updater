@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
-TIMEOUT = 10
+TIMEOUT = 15
 
 
 class ForgeURLs:
