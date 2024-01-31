@@ -25,19 +25,24 @@ def configure_headless_chrome() -> webdriver.ChromeOptions:
     return options
 
 
-def main() -> None:
-    """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
-    new_file = Path(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
+def get_build_file(file_path: PurePath, env_file: str) -> Path:
+    """Combines PurePath and file name into a Path object, ensure that a file exists there, and returns the Path"""
+    new_file = Path(file_path, env_file)
     logging.debug("File upload path determined to be: %s", new_file)
     if not new_file.is_file():
         raise Exception(f"File at {str(new_file)} is not found.")
+    return new_file
 
+
+def main() -> None:
+    """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
+    new_file = get_build_file(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
     creds = ForgeCredentials(os.environ["FG_USER_ID"], os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
     item = ForgeItem(creds, os.environ["FG_ITEM_ID"], timeout=TIMEOUT_SECONDS)
     urls = ForgeURLs()
 
     with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
-        item.upload_and_publish(driver, urls, new_file, ReleaseChannel.LIVE)
+        item.upload_and_publish(driver, urls, new_file, ReleaseChannel.NONE)
 
 
 if __name__ == "__main__":
