@@ -11,6 +11,18 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+class ToastErrorException(BaseException):
+    pass
+
+
+class DropzoneException(BaseException):
+    pass
+
+
+class LongUploadException(BaseException):
+    pass
+
+
 @dataclass
 class DropzoneErrorHandling:
     driver: webdriver
@@ -22,7 +34,7 @@ class DropzoneErrorHandling:
             WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.XPATH, "//*[@class='toast toast-error']")))
             toast_error_box = self.driver.find_element(By.XPATH, "//*[@class='toast toast-error']")
             toast_message = toast_error_box.find_element(By.CLASS_NAME, "toast-message").text
-            raise Exception(toast_message)
+            raise ToastErrorException(toast_message)
         except TimeoutException:
             pass
 
@@ -34,18 +46,17 @@ class DropzoneErrorHandling:
             dropzone_error_box_visible = bool(dropzone_error_box.value_of_css_property("display") == "block")
             if dropzone_error_box_visible:
                 dropzone_error_message = dropzone_error_box.find_element(By.TAG_NAME, "span").get_attribute("innerHTML")
-                raise Exception(dropzone_error_message)
+                raise DropzoneException(dropzone_error_message)
         except TimeoutException:
             pass
 
     def check_report_upload_percentage(self) -> None:
         """Check if dropzone progress bar is present and, if so, raise an exception with the current progress percentage"""
         try:
-            upload_progress_bar = self.driver.find_element(By.CLASS_NAME, "dz-upload")
-            upload_progress_bar_width_filled = upload_progress_bar.value_of_css_property("width").replace("px", "")
+            upload_progress_bar_width_filled = self.driver.find_element(By.CLASS_NAME, "dz-upload").value_of_css_property("width").replace("px", "")
             upload_progress_bar_width = self.driver.find_element(By.CLASS_NAME, "dz-progress").value_of_css_property("width").replace("px", "")
             upload_progress = float(upload_progress_bar_width_filled) / float(upload_progress_bar_width)
-            raise Exception("File upload timed out at {:.0f}%".format(upload_progress))
+            raise LongUploadException("File upload timed out at {:.0f}%".format(upload_progress))
         except NoSuchElementException:
             pass
 
