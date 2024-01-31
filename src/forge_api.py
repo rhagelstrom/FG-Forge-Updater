@@ -12,7 +12,7 @@ from selenium.webdriver.support.select import Select
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
-SPEED_INTERVAL = 2
+SPEED_INTERVAL = 3
 
 
 class ForgeURLs:
@@ -50,6 +50,7 @@ class ForgeItem:
             password_field.send_keys(self.creds.password)
             password_field.submit()
             time.sleep(SPEED_INTERVAL * 3)
+
         try:
             driver.find_element(By.ID, "item-list-content")
         except NoSuchElementException:
@@ -67,10 +68,7 @@ class ForgeItem:
         """Uploads a new build to this Forge item, returning True if successful"""
 
         if not new_build.is_file():
-            logging.error("File at %s is not found.", str(new_build))
-            files = new_build.parent.glob("*")
-            files = [x for x in files if x.is_file()]
-            print(files)
+            raise Exception(f"File at {str(new_build)} is not found.")
 
         # Click upload tab
         driver.find_element(By.ID, "manage-build-uploads-tab").click()
