@@ -34,15 +34,21 @@ def get_build_file(file_path: PurePath, env_file: str) -> Path:
     return new_file
 
 
-def main() -> None:
-    """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
+def construct_objects() -> (Path, ForgeItem, ForgeURLs):
+    """Gets the various objects needed to start uploading builds to the FG Forge"""
     new_file = get_build_file(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
     creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
-    item = ForgeItem(creds, os.environ["FG_ITEM_ID"], timeout=TIMEOUT_SECONDS)
+    item = ForgeItem(creds, os.environ["FG_ITEM_ID"], TIMEOUT_SECONDS)
     urls = ForgeURLs()
+    return new_file, item, urls
+
+
+def main() -> None:
+    """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
+    new_file, item, urls = construct_objects()
 
     with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
-        item.upload_and_publish(driver, urls, new_file, ReleaseChannel.NONE)
+        item.upload_and_publish(driver, urls, new_file, ReleaseChannel.LIVE)
 
 
 if __name__ == "__main__":
