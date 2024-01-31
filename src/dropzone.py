@@ -17,6 +17,7 @@ class DropzoneErrorHandling:
     timeout_seconds: float = 15
 
     def check_report_toast_error(self) -> None:
+        """Wait for timeout window and, if toast error message appears first, raise an exception with the content of the toast message"""
         try:
             WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.XPATH, "//*[@class='toast toast-error']")))
             toast_error_box = self.driver.find_element(By.XPATH, "//*[@class='toast toast-error']")
@@ -26,6 +27,7 @@ class DropzoneErrorHandling:
             pass
 
     def check_report_dropzone_upload_error(self) -> None:
+        """Wait for timeout window and, if dropzone error message appears first, raise an exception with the content of the error message"""
         try:
             WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-error-message")))
             dropzone_error_box = self.driver.find_element(By.CLASS_NAME, "dz-error-message")
@@ -37,6 +39,7 @@ class DropzoneErrorHandling:
             pass
 
     def check_report_upload_percentage(self) -> None:
+        """Check if dropzone progress bar is present and, if so, raise an exception with the current progress percentage"""
         try:
             upload_progress_bar = self.driver.find_element(By.CLASS_NAME, "dz-upload")
             upload_progress_bar_width_filled = upload_progress_bar.value_of_css_property("width").replace("px", "")
@@ -48,6 +51,7 @@ class DropzoneErrorHandling:
 
 
 def drag_build_to_dropzone(driver: webdriver, timeout: float, new_build: Path) -> None:
+    """Open the uploads tab, add file to second upload dropzone found after short pause, and ensure file progress bar appears"""
     WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-build-uploads-tab']")))
     uploads_tab = driver.find_element(By.XPATH, "//a[@id='manage-build-uploads-tab']")
     uploads_tab.click()
