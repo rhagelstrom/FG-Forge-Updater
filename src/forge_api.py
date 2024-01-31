@@ -4,7 +4,6 @@ import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from glob import glob
 
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
@@ -69,7 +68,9 @@ class ForgeItem:
 
         if not new_build.is_file():
             logging.error("File at %s is not found.", str(new_build))
-            print(glob(str(new_build.parent)))
+            files = new_build.parent.glob("*")
+            files = [x for x in files if x.is_file()]
+            print(files)
 
         # Click upload tab
         driver.find_element(By.ID, "manage-build-uploads-tab").click()
