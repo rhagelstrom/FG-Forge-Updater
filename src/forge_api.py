@@ -71,6 +71,7 @@ class ForgeItem:
         time.sleep(SPEED_INTERVAL)
 
         dz_inputs = driver.find_elements(By.XPATH, "//input[@type='file' and @class='dz-hidden-input']")
+        assert new_build.is_file()
         dz_inputs[1].send_keys(str(new_build))
         time.sleep(SPEED_INTERVAL)
 
