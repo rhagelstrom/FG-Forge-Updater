@@ -1,3 +1,8 @@
+# FantasyGrounds filetypes
+*.ext
+*.mod
+*.pak
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
