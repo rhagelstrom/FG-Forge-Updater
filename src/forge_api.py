@@ -15,8 +15,6 @@ from dropzone import DropzoneErrorHandling, drag_build_to_dropzone
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
-TIMEOUT: float = 15
-
 
 class ForgeURLs:
     """Contains URL strings for webpages used on the forge"""
@@ -26,13 +24,21 @@ class ForgeURLs:
 
 
 @dataclass(frozen=True)
+class ReleaseChannel:
+    """Constants representing the strings used to represent each release channel in build-management comboboxes"""
+
+    LIVE: str = "Live"
+    TEST: str = "Test"
+    NONE: str = "No Channel"
+
+
+@dataclass(frozen=True)
 class ForgeCredentials:
     """Dataclass used to store the authentication credentials used on FG Forge"""
 
     user_id: str
     username: str
     password: str
-    password_md5: str
 
 
 @dataclass(frozen=True)
@@ -41,13 +47,23 @@ class ForgeItem:
 
     creds: ForgeCredentials
     item_id: str
+    timeout: float
+
+    def upload_and_publish(self, driver: webdriver, urls: ForgeURLs, new_file: Path, channel: str) -> None:
+        self.login(driver, urls)
+        self.open_items_list(driver, urls)
+        self.open_item_page(driver)
+        self.add_build(driver, new_file)
+        self.open_items_list(driver, urls)
+        self.open_item_page(driver)
+        self.set_latest_build_channel(driver, channel)
 
     def login(self, driver: webdriver, urls: ForgeURLs) -> None:
         """Open manage-craft and login if prompted"""
         driver.get(urls.MANAGE_CRAFT)
 
         try:
-            WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.ID, "login-form")))
+            WebDriverWait(driver, self.timeout).until(EC.presence_of_element_located((By.ID, "login-form")))
             username_field = driver.find_element(By.NAME, "vb_login_username")
             password_field = driver.find_element(By.NAME, "vb_login_password")
             username_field.send_keys(self.creds.username)
@@ -56,13 +72,12 @@ class ForgeItem:
         except TimeoutException:
             pass
 
-    @staticmethod
-    def open_items_list(driver: webdriver, urls: ForgeURLs) -> None:
+    def open_items_list(self, driver: webdriver, urls: ForgeURLs) -> None:
         """Open the manage craft page, raising an exception if the item table size selector isn't found."""
         driver.get(urls.MANAGE_CRAFT)
 
         try:
-            WebDriverWait(driver, TIMEOUT).until(EC.presence_of_element_located((By.NAME, "items-table_length")))
+            WebDriverWait(driver, self.timeout).until(EC.presence_of_element_located((By.NAME, "items-table_length")))
             items_per_page = Select(driver.find_element(By.NAME, "items-table_length"))
             items_per_page.select_by_visible_text("100")
         except TimeoutException:
@@ -72,37 +87,35 @@ class ForgeItem:
         """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
 
         try:
-            WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
+            WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link = driver.find_element(By.XPATH, f"//a[@data-item-id='{self.item_id}']")
             item_link.click()
         except TimeoutException:
             raise Exception("Could not find item page, is FORGE_ITEM_ID correct?")
 
-    @staticmethod
-    def add_build(driver: webdriver, new_build: Path) -> None:
+    def add_build(self, driver: webdriver, new_build: Path) -> None:
         """Uploads a new build to this Forge item, raising an exception if the new_build isn't added to the dropzone or doesn't upload successfully."""
 
-        drag_build_to_dropzone(driver, TIMEOUT, new_build)
+        drag_build_to_dropzone(driver, self.timeout, new_build)
 
-        WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
+        WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button = driver.find_element(By.ID, "submit-build-button")
         submit_button.click()
 
-        dropzone_errors = DropzoneErrorHandling(driver, TIMEOUT)
+        dropzone_errors = DropzoneErrorHandling(driver, self.timeout)
         dropzone_errors.check_report_toast_error()
         dropzone_errors.check_report_dropzone_upload_error()
         dropzone_errors.check_report_upload_percentage()
 
-    @staticmethod
-    def set_latest_build_live(driver: webdriver) -> None:
+    def set_latest_build_channel(self, driver: webdriver, channel: str) -> None:
         """Set the latest build as active on the Live release channel, raising an exception if the build selector isn't found."""
 
         try:
-            WebDriverWait(driver, TIMEOUT).until(
+            WebDriverWait(driver, self.timeout).until(
                 EC.presence_of_element_located((By.XPATH, "//select[@class='form-control item-build-channel item-build-option']"))
             )
             item_builds = driver.find_elements(By.XPATH, "//select[@class='form-control item-build-channel item-build-option']")
             item_builds_latest = Select(item_builds[0])
-            item_builds_latest.select_by_visible_text("Live")
+            item_builds_latest.select_by_visible_text(channel)
         except TimeoutException:
             raise Exception("Could not find item page, is FORGE_ITEM_ID correct?")

@@ -1,3 +1,5 @@
+"""Provides an error-handling class and file-upload function to allow interaction with dropzones (from DropzoneJS)"""
+
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -12,20 +14,20 @@ from selenium.webdriver.support.ui import WebDriverWait
 @dataclass
 class DropzoneErrorHandling:
     driver: webdriver
-    timeout: float
+    timeout_seconds: float = 15
 
-    def check_report_toast_error(self):
+    def check_report_toast_error(self) -> None:
         try:
-            WebDriverWait(self.driver, self.timeout).until(EC.presence_of_element_located((By.XPATH, "//*[@class='toast toast-error']")))
+            WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.XPATH, "//*[@class='toast toast-error']")))
             toast_error_box = self.driver.find_element(By.XPATH, "//*[@class='toast toast-error']")
             toast_message = toast_error_box.find_element(By.CLASS_NAME, "toast-message").text
             raise Exception(toast_message)
         except TimeoutException:
             pass
 
-    def check_report_dropzone_upload_error(self):
+    def check_report_dropzone_upload_error(self) -> None:
         try:
-            WebDriverWait(self.driver, self.timeout).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-error-message")))
+            WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-error-message")))
             dropzone_error_box = self.driver.find_element(By.CLASS_NAME, "dz-error-message")
             dropzone_error_box_visible = bool(dropzone_error_box.value_of_css_property("display") == "block")
             if dropzone_error_box_visible:
@@ -34,7 +36,7 @@ class DropzoneErrorHandling:
         except TimeoutException:
             pass
 
-    def check_report_upload_percentage(self):
+    def check_report_upload_percentage(self) -> None:
         try:
             upload_progress_bar = self.driver.find_element(By.CLASS_NAME, "dz-upload")
             upload_progress_bar_width_filled = upload_progress_bar.value_of_css_property("width").replace("px", "")
