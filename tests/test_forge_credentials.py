@@ -1,12 +1,17 @@
-import pytest
 from dataclasses import FrozenInstanceError
+
+import pytest
 
 from src.forge_api import ForgeCredentials
 
 
 def test_forge_credentials_creation() -> None:
-    creds = ForgeCredentials("doug", "i_Love md5!")
-    assert creds.username == "doug"
-    assert creds.password == "i_Love md5!"
+    user_string = "eugene"
+    user_pass = "i_Love md5!"
+
+    creds = ForgeCredentials(user_string, "i_Love md5!")
+
+    assert creds.username == user_string
+    assert creds.password == user_pass
     with pytest.raises(FrozenInstanceError):
-        creds.password = "new_password"
+        creds.password = "god"
