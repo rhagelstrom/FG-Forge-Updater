@@ -16,6 +16,7 @@ from dropzone import DropzoneErrorHandling, add_file_to_dropzone
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
 
+@dataclass(frozen=True, init=False)
 class ForgeURLs:
     """Contains URL strings for webpages used on the forge"""
 
@@ -23,7 +24,7 @@ class ForgeURLs:
     API_CRAFTER_ITEMS: str = "https://forge.fantasygrounds.com/api/crafter/items"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, init=False)
 class ReleaseChannel:
     """Constants representing the strings used to represent each release channel in build-management comboboxes"""
 
