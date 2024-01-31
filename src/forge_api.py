@@ -60,8 +60,13 @@ class ForgeItem:
         items_per_page.send_keys("100")
         time.sleep(SPEED_INTERVAL)
 
+        try:
+            item_link = driver.find_element(By.XPATH, f"//a[@data-item-id='{self.item_id}']")
+        except NoSuchElementException:
+            raise Exception("Could not find item page, is FORGE_ITEM_ID correct?")
+
         # Click appropriate item page
-        driver.find_element(By.XPATH, f"//a[@data-item-id='{self.item_id}']").click()
+        item_link.click()
         time.sleep(SPEED_INTERVAL)
 
     def upload_item_build(self, driver: webdriver, new_build: Path, urls: ForgeURLs) -> None:
