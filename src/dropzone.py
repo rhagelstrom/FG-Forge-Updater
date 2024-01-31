@@ -63,5 +63,5 @@ def add_file_to_dropzone(driver: webdriver, timeout: float, upload_file: Path) -
 
     try:
         WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-upload")))
-    except TimeoutException:
-        raise Exception("File drag and drop didn't work!")
+    except TimeoutException as e:
+        raise TimeoutException("File drag and drop didn't work!") from e

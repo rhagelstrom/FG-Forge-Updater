@@ -80,8 +80,8 @@ class ForgeItem:
             WebDriverWait(driver, self.timeout).until(EC.presence_of_element_located((By.NAME, "items-table_length")))
             items_per_page = Select(driver.find_element(By.NAME, "items-table_length"))
             items_per_page.select_by_visible_text("100")
-        except TimeoutException:
-            raise Exception("Could not load the Manage Craft page!")
+        except TimeoutException as e:
+            raise TimeoutException("Could not load the Manage Craft page!") from e
 
     def open_item_page(self, driver: webdriver) -> None:
         """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
@@ -90,8 +90,8 @@ class ForgeItem:
             WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link = driver.find_element(By.XPATH, f"//a[@data-item-id='{self.item_id}']")
             item_link.click()
-        except TimeoutException:
-            raise Exception("Could not find item page, is FORGE_ITEM_ID correct?")
+        except TimeoutException as e:
+            raise TimeoutException("Could not find item page, is FORGE_ITEM_ID correct?") from e
 
     def add_build(self, driver: webdriver, new_build: Path) -> None:
         """Uploads a new build to this Forge item, raising an exception if the new_build isn't added to the dropzone or doesn't upload successfully."""
@@ -117,5 +117,5 @@ class ForgeItem:
             item_builds = driver.find_elements(By.XPATH, "//select[@class='form-control item-build-channel item-build-option']")
             item_builds_latest = Select(item_builds[0])
             item_builds_latest.select_by_visible_text(channel)
-        except TimeoutException:
-            raise Exception("Could not find item page, is FORGE_ITEM_ID correct?")
+        except TimeoutException as e:
+            raise TimeoutException(f"Could not find item page, is {self.item_id} the correct item id?") from e
