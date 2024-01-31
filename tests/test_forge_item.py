@@ -7,11 +7,12 @@ from src.forge_api import ForgeCredentials, ForgeItem
 
 
 class ForgeCredentialsFactory(DataclassFactory[ForgeCredentials]):
+    """Represents a ForgeCredentials object for the purposes of testing ForgeItem objects"""
     __model__ = ForgeCredentials
 
 
 def test_forge_item_creation() -> None:
-    """Ensure that creds, item_id, and timeout limit are saved into ForgeItem"""
+    """Ensures that provided item id and timeout limit are found in the ForgeItems object and that attempts at modifying values are not allowed"""
     item_string = "33"
     timeout_string = float(3.14159)
 
