@@ -50,7 +50,7 @@ class DropzoneErrorHandling:
             pass
 
 
-def drag_build_to_dropzone(driver: webdriver, timeout: float, new_build: Path) -> None:
+def add_file_to_dropzone(driver: webdriver, timeout: float, upload_file: Path) -> None:
     """Open the uploads tab, add file to second upload dropzone found after short pause, and ensure file progress bar appears"""
     WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-build-uploads-tab']")))
     uploads_tab = driver.find_element(By.XPATH, "//a[@id='manage-build-uploads-tab']")
@@ -59,7 +59,7 @@ def drag_build_to_dropzone(driver: webdriver, timeout: float, new_build: Path) -
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-hidden-input")))
     time.sleep(0.5)
     dz_inputs = driver.find_elements(By.CLASS_NAME, "dz-hidden-input")
-    dz_inputs[1].send_keys(str(new_build))
+    dz_inputs[1].send_keys(str(upload_file))
 
     try:
         WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-upload")))

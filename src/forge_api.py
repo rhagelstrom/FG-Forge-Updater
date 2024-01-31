@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-from dropzone import DropzoneErrorHandling, drag_build_to_dropzone
+from dropzone import DropzoneErrorHandling, add_file_to_dropzone
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
@@ -96,7 +96,7 @@ class ForgeItem:
     def add_build(self, driver: webdriver, new_build: Path) -> None:
         """Uploads a new build to this Forge item, raising an exception if the new_build isn't added to the dropzone or doesn't upload successfully."""
 
-        drag_build_to_dropzone(driver, self.timeout, new_build)
+        add_file_to_dropzone(driver, self.timeout, new_build)
 
         WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button = driver.find_element(By.ID, "submit-build-button")
