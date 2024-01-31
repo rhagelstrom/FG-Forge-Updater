@@ -10,8 +10,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
-from drop_file import drag_and_drop_file
-
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
 SPEED_INTERVAL = 2
@@ -72,9 +70,8 @@ class ForgeItem:
         driver.find_element(By.ID, "manage-build-uploads-tab").click()
         time.sleep(SPEED_INTERVAL)
 
-        # Drag file into dropzone
-        dropzone = driver.find_element(By.ID, "build-upload-dropzone")
-        drag_and_drop_file(dropzone, new_build)
+        dz_inputs = driver.find_elements(By.XPATH, "//input[@type='file' and @class='dz-hidden-input']")
+        dz_inputs[1].send_keys(str(new_build))
         time.sleep(SPEED_INTERVAL)
 
         # Check if files are there
@@ -82,8 +79,6 @@ class ForgeItem:
             driver.find_element(By.CLASS_NAME, "dz-upload")
         except NoSuchElementException:
             raise Exception("File drag and drop didn't work!")
-
-        print(f"window size: {driver.get_window_size()}")
 
         # Click dropzone submit button
         driver.find_element(By.ID, "submit-build-button").click()
