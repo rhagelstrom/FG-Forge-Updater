@@ -1,8 +1,15 @@
 from dataclasses import FrozenInstanceError
 
 import pytest
+from polyfactory.factories import DataclassFactory
 
 from src.forge_api import ForgeCredentials
+
+
+class ForgeCredentialsFactory(DataclassFactory[ForgeCredentials]):
+    """Represents a ForgeCredentials object for the purposes of testing ForgeItem objects"""
+
+    __model__ = ForgeCredentials
 
 
 def test_forge_credentials_creation() -> None:

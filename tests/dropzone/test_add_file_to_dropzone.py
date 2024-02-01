@@ -20,7 +20,6 @@ def mock_element() -> MagicMock:
     """Construct a mock WebElement"""
     element = MagicMock(spec=WebElement)
     element.click.return_value = None
-    element.is_enabled.return_value = True
     element.is_displayed.return_value = True
     element.send_keys.return_value = None
     element.find_elements.side_effect = find_elements
@@ -28,13 +27,13 @@ def mock_element() -> MagicMock:
 
 
 def find_element(by: str, value: str) -> MagicMock:
-    """Return a mock_element if the by, value pair isn't found in TEST_ELEMENTS"""
+    """Return a mock_element if the (by, value) pair isn't found in TEST_ELEMENTS"""
     if (by, value) in TEST_ELEMENTS:
         return mock_element()
 
 
 def find_elements(by, value) -> list[MagicMock]:
-    """Return two mock_elements if the by, value pair isn't found in TEST_ELEMENTS"""
+    """Return two mock_elements if the (by, value) pair isn't found in TEST_ELEMENTS"""
     element = find_element(by, value)
     return [element, element]
 

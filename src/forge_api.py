@@ -60,7 +60,7 @@ class ForgeItem:
             username_field.send_keys(self.creds.username)
             password_field.send_keys(self.creds.password)
             login_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.CLASS_NAME, "registerbtn")))
-            login_button.submit()
+            login_button.click()
         except TimeoutException:
             pass
 
