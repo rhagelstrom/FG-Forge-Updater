@@ -29,10 +29,7 @@ dev = [
     "ruff==0.1.14"
 ]
 github-actions = [
-    "polyfactory==2.14.1",
-    "pytest==7.4.4",
     "pytest-emoji==0.2.0",
     "pytest-md==0.2.0",
-    "ruff==0.1.14",
     "ydiff==1.2"
 ]
