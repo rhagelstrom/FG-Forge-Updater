@@ -54,5 +54,5 @@ FG_README_UPDATE=FALSE
 3. Run the following command from inside the project folder:
 
 ```shell
-python3 src/app.py
+python3 src/main.py
 ```
