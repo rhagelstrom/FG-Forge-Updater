@@ -54,4 +54,5 @@ python3 src/app.py
 
 ## Features
 
-TODO
+* Uploads new builds to FantasyGrounds Forge items
+* Updates item descriptions based on README.md file included in root of build package
