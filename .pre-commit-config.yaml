@@ -24,3 +24,13 @@ repos:
         hooks:
             -   id: pyupgrade
                 args: [--py39-plus]
+    -   repo: local
+        hooks:
+            -   id: pytest-check
+                name: pytest
+                entry: ./venv/bin/pytest tests
+                language: system
+                types: [python]
+                pass_filenames: false
+                always_run: true
+ 
