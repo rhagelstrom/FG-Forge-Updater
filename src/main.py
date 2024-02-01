@@ -63,7 +63,8 @@ def main() -> None:
 
     with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
         item.upload_and_publish(driver, urls, new_file, ReleaseChannel.LIVE)
-        # item.update_description(driver, urls, get_readme_html(new_file))
+        if "FG_README_UPDATE" not in os.environ or os.environ["FG_README_UPDATE"] != "FALSE":
+            item.update_description(driver, urls, get_readme_html(new_file))
 
 
 if __name__ == "__main__":

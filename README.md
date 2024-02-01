@@ -41,6 +41,8 @@ FG_USER_PASS=**********
 FG_ITEM_ID=33
 # the name of the ext file you want to upload
 FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
+# optionally you can add this to prevent descriptions from being replaced with the contents of README.md
+FG_README_UPDATE=FALSE
 ```
 
 2. Put an ext file to upload into the project folder.
