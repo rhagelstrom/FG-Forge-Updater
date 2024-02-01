@@ -8,6 +8,7 @@ from src.forge_api import ForgeCredentials, ForgeItem
 
 class ForgeCredentialsFactory(DataclassFactory[ForgeCredentials]):
     """Represents a ForgeCredentials object for the purposes of testing ForgeItem objects"""
+
     __model__ = ForgeCredentials
 
 
