@@ -54,7 +54,6 @@ def test_add_file_to_dropzone() -> None:
 
     expected_find_element = [
         call(By.XPATH, "//a[@id='manage-build-uploads-tab']"),
-        call(By.XPATH, "//a[@id='manage-build-uploads-tab']"),
         call(By.CLASS_NAME, "dz-hidden-input"),
         call(By.CLASS_NAME, "dz-upload"),
     ]
@@ -73,7 +72,6 @@ def test_add_file_to_dropzone_timeout() -> None:
         add_file_to_dropzone(mock_driver, 2, Path(__file__))
 
     expected_find_element = [
-        call(By.XPATH, "//a[@id='manage-build-uploads-tab']"),
         call(By.XPATH, "//a[@id='manage-build-uploads-tab']"),
         call(By.CLASS_NAME, "dz-hidden-input"),
         call(By.CLASS_NAME, "dz-upload"),
