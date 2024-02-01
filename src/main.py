@@ -3,8 +3,11 @@
 import logging
 import os
 from pathlib import Path, PurePath
+from zipfile import ZipFile
 
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
+from markdown import markdown
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
@@ -23,6 +26,17 @@ def configure_headless_chrome() -> webdriver.ChromeOptions:
     options.add_argument("--headless=new")
     options.add_argument("--window-size=1280,1024")
     return options
+
+
+def get_readme_html(new_file: Path) -> str:
+    """Parses the README.md from the new build and returns an html-formatted string with image width limited"""
+    zip_file = ZipFile(new_file)
+    if "README.md" in zip_file.namelist():
+        markdown_text = zip_file.read("README.md").decode("UTF-8")
+        soup = BeautifulSoup(markdown(markdown_text), "html.parser")
+        for img in soup.find_all("img"):
+            img["style"] = "max-width: 100%;"
+        return str(soup)
 
 
 def get_build_file(file_path: PurePath, env_file: str) -> Path:
@@ -49,6 +63,7 @@ def main() -> None:
 
     with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
         item.upload_and_publish(driver, urls, new_file, ReleaseChannel.LIVE)
+        # item.update_description(driver, urls, get_readme_html(new_file))
 
 
 if __name__ == "__main__":

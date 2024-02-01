@@ -31,8 +31,9 @@ class DropzoneErrorHandling:
     def check_report_toast_error(self) -> None:
         """Wait for timeout window and, if toast error message appears first, raise an exception with the content of the toast message"""
         try:
-            WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.XPATH, "//*[@class='toast toast-error']")))
-            toast_error_box = self.driver.find_element(By.XPATH, "//*[@class='toast toast-error']")
+            toast_error_box = WebDriverWait(self.driver, self.timeout_seconds).until(
+                EC.presence_of_element_located((By.XPATH, "//*[@class='toast toast-error']"))
+            )
             toast_message = toast_error_box.find_element(By.CLASS_NAME, "toast-message").text
             raise ToastErrorException(toast_message)
         except TimeoutException:
@@ -41,8 +42,7 @@ class DropzoneErrorHandling:
     def check_report_dropzone_upload_error(self) -> None:
         """Wait for timeout window and, if dropzone error message appears first, raise an exception with the content of the error message"""
         try:
-            WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-error-message")))
-            dropzone_error_box = self.driver.find_element(By.CLASS_NAME, "dz-error-message")
+            dropzone_error_box = WebDriverWait(self.driver, self.timeout_seconds).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-error-message")))
             dropzone_error_box_visible = bool(dropzone_error_box.value_of_css_property("display") == "block")
             if dropzone_error_box_visible:
                 dropzone_error_message = dropzone_error_box.find_element(By.TAG_NAME, "span").get_attribute("innerHTML")
@@ -56,15 +56,14 @@ class DropzoneErrorHandling:
             upload_progress_bar_width_filled = self.driver.find_element(By.CLASS_NAME, "dz-upload").value_of_css_property("width").replace("px", "")
             upload_progress_bar_width = self.driver.find_element(By.CLASS_NAME, "dz-progress").value_of_css_property("width").replace("px", "")
             upload_progress = float(upload_progress_bar_width_filled) / float(upload_progress_bar_width)
-            raise LongUploadException("File upload timed out at {:.0f}%".format(upload_progress))
+            raise LongUploadException(f"File upload timed out at {upload_progress:.0f}%")
         except NoSuchElementException:
             pass
 
 
 def add_file_to_dropzone(driver: webdriver, timeout: float, upload_file: Path) -> None:
     """Open the uploads tab, add file to second upload dropzone found after short pause, and ensure file progress bar appears"""
-    WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-build-uploads-tab']")))
-    uploads_tab = driver.find_element(By.XPATH, "//a[@id='manage-build-uploads-tab']")
+    uploads_tab = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-build-uploads-tab']")))
     uploads_tab.click()
 
     WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-hidden-input")))
