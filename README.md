@@ -8,6 +8,11 @@ browser instance. It is intended for use in CI release workflows such as one I u
 > [!WARNING]
 > At the moment, this will only work for the first page of 100 items found on a Forge account.
 
+## Features
+
+* Uploads new builds to FantasyGrounds Forge items
+* Updates item descriptions based on README.md file included in root of build package
+
 ## Getting Started
 
 To run this code, you'll need to have Python 3.9, 3.10, 3.11, or 3.12 installed on your machine. You'll also need to
@@ -51,8 +56,3 @@ FG_README_UPDATE=FALSE
 ```shell
 python3 src/app.py
 ```
-
-## Features
-
-* Uploads new builds to FantasyGrounds Forge items
-* Updates item descriptions based on README.md file included in root of build package
