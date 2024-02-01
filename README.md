@@ -3,7 +3,7 @@
 # Forge Updater
 
 Herein lies a Python module that will upload builds to the FantasyGrounds Forge automatically via automation of a Chrome
-browser instance.
+browser instance. It is intended for use in CI release workflows such as one I use [here](https://github.com/bmos/FG-PFRPG-Spell-Formatting/blob/main/.github/workflows/create-ext.yml).
 
 > [!WARNING]
 > At the moment, this will only work for the first page of 100 items found on a Forge account.
