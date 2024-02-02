@@ -129,7 +129,7 @@ class ForgeItem:
         description_field = driver.find_element(By.XPATH, "//div[@id='manage-item']").find_element(By.CLASS_NAME, "note-editable")
         description_field.clear()
         driver.execute_script("arguments[0].innerHTML = arguments[1];", description_field, description_text)
-        time.sleep(0.25)
+        time.sleep(2.5)
 
         submit_button.click()
         time.sleep(0.5)
