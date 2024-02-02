@@ -92,20 +92,20 @@ class ForgeItem:
         except TimeoutException as e:
             raise TimeoutException(f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?") from e
 
-    def upload_and_publish(self, driver: webdriver, urls: ForgeURLs, new_file: Path, channel: str) -> None:
+    def upload_and_publish(self, driver: webdriver, urls: ForgeURLs, new_files: Path, channel: str) -> None:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
         self.login(driver, urls)
         self.open_items_list(driver, urls)
         self.open_item_page(driver)
-        self.add_build(driver, new_file)
+        self.add_build(driver, new_files)
         self.open_items_list(driver, urls)
         self.open_item_page(driver)
         self.set_latest_build_channel(driver, channel)
 
-    def add_build(self, driver: webdriver, new_build: Path) -> None:
-        """Uploads a new build to this Forge item, raising an exception if the new_build isn't added to the dropzone or doesn't upload successfully."""
-
-        add_file_to_dropzone(driver, self.timeout, new_build)
+    def add_build(self, driver: webdriver, new_builds: Path) -> None:
+        """Uploads a new build(s) to this Forge item, raising an exception if the new_builds isn't added to the dropzone or doesn't upload successfully."""
+        for build in new_builds:
+            add_file_to_dropzone(driver, self.timeout, build)
 
         submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button.click()

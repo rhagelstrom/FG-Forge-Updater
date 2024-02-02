@@ -34,15 +34,16 @@ def configure_headless_chrome() -> webdriver.ChromeOptions:
     return options
 
 
-def get_readme_html(new_file: Path) -> str:
+def get_readme_html(new_files: Path) -> str:
     """Parses the README.md from the new build and returns an html-formatted string with image width limited"""
-    zip_file = ZipFile(new_file)
-    if Constants.README_FILE_NAME in zip_file.namelist():
-        markdown_text = zip_file.read(Constants.README_FILE_NAME).decode("UTF-8")
-        soup = BeautifulSoup(markdown(markdown_text, extensions=["extra", "nl2br", "smarty"]), "html.parser")
-        for img in soup.find_all("img"):
-            img["style"] = "max-width: 100%;"
-        return str(soup)
+    for file in new_files:
+        zip_file = ZipFile(file)
+        if Constants.README_FILE_NAME in zip_file.namelist():
+            markdown_text = zip_file.read(Constants.README_FILE_NAME).decode("UTF-8")
+            soup = BeautifulSoup(markdown(markdown_text, extensions=["extra", "nl2br", "smarty"]), "html.parser")
+            for img in soup.find_all("img"):
+                img["style"] = "max-width: 100%;"
+            return str(soup)
 
 
 def get_build_file(file_path: PurePath, env_file: str) -> Path:
@@ -56,20 +57,24 @@ def get_build_file(file_path: PurePath, env_file: str) -> Path:
 
 def construct_objects() -> (Path, ForgeItem, ForgeURLs):
     """Gets the various objects needed to start uploading builds to the FG Forge"""
-    new_file = get_build_file(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
+    file_names = os.environ["FG_UL_FILE"].split(',')
+    new_files = []
+    for file in file_names:
+        new_files.append(get_build_file(PurePath(__file__).parents[1], file))
+    # new_file = get_build_file(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
     creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
     item = ForgeItem(creds, os.environ["FG_ITEM_ID"], Constants.TIMEOUT_SECONDS)
     urls = ForgeURLs()
-    return new_file, item, urls
+    return new_files, item, urls
 
 
 def main() -> None:
     """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
-    new_file, item, urls = construct_objects()
+    new_files, item, urls = construct_objects()
 
     with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
-        item.upload_and_publish(driver, urls, new_file, ReleaseChannel.LIVE)
-        readme_text = get_readme_html(new_file)
+        item.upload_and_publish(driver, urls, new_files, ReleaseChannel.LIVE)
+        readme_text = get_readme_html(new_files)
         if readme_text and "FG_README_UPDATE" not in os.environ or os.environ["FG_README_UPDATE"] != "FALSE":
             item.update_description(driver, urls, readme_text)
 
