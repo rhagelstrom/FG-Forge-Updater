@@ -11,7 +11,7 @@ browser instance. It is intended for use in CI release workflows such as one I u
 ## Features
 
 * Uploads new builds to FantasyGrounds Forge items
-* Updates item descriptions based on README.md file included in root of build package
+* Updates item descriptions based on README.md file included in root of build package (inside the .ext or .mod file)
 
 ## Getting Started
 
