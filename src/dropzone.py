@@ -1,5 +1,6 @@
 """Provides an error-handling class and file-upload function to allow interaction with dropzones (from DropzoneJS)"""
 
+import logging
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -9,6 +10,8 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 
 
 class ToastErrorException(BaseException):
@@ -37,7 +40,9 @@ class DropzoneErrorHandling:
             toast_message = toast_error_box.find_element(By.CLASS_NAME, "toast-message").text
             raise ToastErrorException(toast_message)
         except TimeoutException:
-            pass
+            logging.info("No toast message found")
+        except NoSuchElementException:
+            logging.info("No toast error or error message found")
 
     def check_report_dropzone_upload_error(self) -> None:
         """Wait for timeout window and, if dropzone error message appears first, raise an exception with the content of the error message"""
@@ -48,7 +53,7 @@ class DropzoneErrorHandling:
                 dropzone_error_message = dropzone_error_box.find_element(By.TAG_NAME, "span").get_attribute("innerHTML")
                 raise DropzoneException(dropzone_error_message)
         except TimeoutException:
-            pass
+            logging.info("No dropzone error found")
 
     def check_report_upload_percentage(self) -> None:
         """Check if dropzone progress bar is present and, if so, raise an exception with the current progress percentage"""
@@ -58,7 +63,7 @@ class DropzoneErrorHandling:
             upload_progress = float(upload_progress_bar_width_filled) / float(upload_progress_bar_width)
             raise LongUploadException(f"File upload timed out at {upload_progress:.0f}%")
         except NoSuchElementException:
-            pass
+            logging.info("No file progress bars found")
 
 
 def add_file_to_dropzone(driver: webdriver, timeout: float, upload_file: Path) -> None:

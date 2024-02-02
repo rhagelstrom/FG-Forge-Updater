@@ -62,7 +62,7 @@ class ForgeItem:
             login_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.CLASS_NAME, "registerbtn")))
             login_button.click()
         except TimeoutException:
-            pass
+            logging.info("No username or password field found, or login button is not clickable.")
 
     def open_items_list(self, driver: webdriver, urls: ForgeURLs) -> None:
         """Open the manage craft page, raising an exception if the item table size selector isn't found."""

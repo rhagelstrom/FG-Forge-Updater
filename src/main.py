@@ -42,7 +42,7 @@ def get_readme_html(new_file: Path) -> str:
 def get_build_file(file_path: PurePath, env_file: str) -> Path:
     """Combines PurePath and file name into a Path object, ensure that a file exists there, and returns the Path"""
     new_file = Path(file_path, env_file)
-    logging.debug("File upload path determined to be: %s", new_file)
+    logging.info("File upload path determined to be: %s", new_file)
     if not new_file.is_file():
         raise FileNotFoundError(f"File at {str(new_file)} is not found.")
     return new_file
