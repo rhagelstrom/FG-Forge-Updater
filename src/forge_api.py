@@ -62,6 +62,7 @@ class ForgeItem:
             password_field.send_keys(self.creds.password)
             login_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.CLASS_NAME, "registerbtn")))
             login_button.click()
+            time.sleep(0.25)
         except TimeoutException:
             logging.info("No username or password field found, or login button is not clickable.")
 
