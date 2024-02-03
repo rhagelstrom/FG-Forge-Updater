@@ -63,6 +63,13 @@ class ForgeItem:
             login_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.CLASS_NAME, "registerbtn")))
             login_button.click()
             time.sleep(0.25)
+
+            try:
+                WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@class='blockrow restore']")))
+                raise Exception("Login unsuccessful")
+            except TimeoutException:
+                logging.info("Login successful")
+
         except TimeoutException:
             logging.info("No username or password field found, or login button is not clickable.")
 
