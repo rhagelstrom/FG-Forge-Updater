@@ -4,8 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.forge_api import ForgeItem, ForgeURLs
-from tests.forge_api.test_forge_credentials import ForgeCredentialsFactory
+from forge_api import ForgeItem, ForgeURLs
+from ..test_forge_credentials import ForgeCredentialsFactory
 
 TEST_CALLS = [
     (By.NAME, "vb_login_username"),

@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-from forge_api import ForgeItem, ForgeURLs  # note that we must omit the "src." here so that type checking works
+from forge_api import ForgeItem, ForgeURLs
 from src.main import construct_objects
 
 
