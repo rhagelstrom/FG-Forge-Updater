@@ -19,7 +19,7 @@ load_dotenv(Path(PurePath(__file__).parents[1], ".env"))
 
 class Constants:
     README_FILE_NAME: str = "README.md"
-    TIMEOUT_SECONDS: float = 15
+    TIMEOUT_SECONDS: float = 7
     CHROME_ARGS: list[str] = [
         "--remote-debugging-port=9222",
         "--headless=new",

@@ -29,7 +29,7 @@ class LongUploadException(BaseException):
 @dataclass
 class DropzoneErrorHandling:
     driver: webdriver
-    timeout_seconds: float = 15
+    timeout_seconds: float = 7
 
     def check_report_toast_error(self) -> None:
         """Wait for timeout window and, if toast error message appears first, raise an exception with the content of the toast message"""

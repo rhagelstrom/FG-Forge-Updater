@@ -57,6 +57,7 @@ class ForgeItem:
         try:
             username_field = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "vb_login_username")))
             password_field = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "vb_login_password")))
+            time.sleep(0.25)
             username_field.send_keys(self.creds.username)
             password_field.send_keys(self.creds.password)
             login_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.CLASS_NAME, "registerbtn")))
@@ -129,10 +130,11 @@ class ForgeItem:
         description_field = driver.find_element(By.XPATH, "//div[@id='manage-item']").find_element(By.CLASS_NAME, "note-editable")
         description_field.clear()
         driver.execute_script("arguments[0].innerHTML = arguments[1];", description_field, description_text)
-        time.sleep(2.5)
+        time.sleep(0.25)
 
         submit_button.click()
-        time.sleep(0.5)
+        time.sleep(0.25)
+        logging.info("Forge item description uploaded")
 
     def update_description(self, driver: webdriver, urls: ForgeURLs, description: str) -> None:
         """Coordinates sequential use of other class methods to update the item description for an item on the FG Forge"""
