@@ -65,7 +65,7 @@ class ForgeItem:
             time.sleep(0.25)
 
             try:
-                WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//div[@class='blockrow restore']")))
+                WebDriverWait(driver, self.timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@class='blockrow restore']")))
                 raise Exception(f"Attempted login as {self.creds.username} was unsuccessful")
             except TimeoutException:
                 logging.info(f"Logged in as {self.creds.username}")
