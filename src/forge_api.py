@@ -106,6 +106,7 @@ class ForgeItem:
         dropzone_errors.check_report_toast_error()
         dropzone_errors.check_report_dropzone_upload_error()
         dropzone_errors.check_report_upload_percentage()
+        logging.info("Build upload complete")
 
     def set_latest_build_channel(self, driver: webdriver, channel: str) -> None:
         """Set the latest build as active on the Live release channel, raising an exception if the build selector isn't found."""
@@ -117,6 +118,7 @@ class ForgeItem:
                 )
             )
             item_builds_latest.select_by_visible_text(channel)
+            logging.info(f"Set build channel: {channel}")
         except TimeoutException as e:
             raise TimeoutException(f"Could not find item page, is {self.item_id} the correct item id?") from e
 
@@ -129,6 +131,7 @@ class ForgeItem:
 
         description_field = driver.find_element(By.XPATH, "//div[@id='manage-item']").find_element(By.CLASS_NAME, "note-editable")
         description_field.clear()
+        logging.info("Forge item description cleared")
         driver.execute_script("arguments[0].innerHTML = arguments[1];", description_field, description_text)
         time.sleep(0.25)
 
@@ -138,6 +141,7 @@ class ForgeItem:
 
     def update_description(self, driver: webdriver, urls: ForgeURLs, description: str) -> None:
         """Coordinates sequential use of other class methods to update the item description for an item on the FG Forge"""
+        logging.info("Updating Forge item description")
         self.login(driver, urls)
         self.open_items_list(driver, urls)
         self.open_item_page(driver)
