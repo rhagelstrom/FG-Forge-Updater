@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
 
 
 class ToastErrorException(BaseException):
