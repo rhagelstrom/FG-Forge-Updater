@@ -81,7 +81,7 @@ class ForgeItem:
             item_link = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link.click()
         except TimeoutException as e:
-            raise TimeoutException("Could not find item page, is FORGE_ITEM_ID correct?") from e
+            raise TimeoutException(f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?") from e
 
     def upload_and_publish(self, driver: webdriver, urls: ForgeURLs, new_file: Path, channel: str) -> None:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
