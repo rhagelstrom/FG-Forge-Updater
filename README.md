@@ -11,8 +11,10 @@ use [here](https://github.com/bmos/FG-PFRPG-Spell-Formatting/blob/main/.github/w
 
 ## Features
 
-* Uploads new builds to FantasyGrounds Forge items
-* Updates item descriptions based on README.md file included in root of build package (inside the .ext or .mod file)
+* Uploads new builds to FantasyGrounds Forge items.
+* Updates item descriptions based on README.md file included in root of build package (inside the .ext or .mod file).
+  Note that as Forge does not allow externally-hosted images, they will be stripped from the description when it is
+  submitted.
 
 ## Getting Started
 
