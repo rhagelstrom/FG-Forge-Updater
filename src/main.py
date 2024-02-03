@@ -16,24 +16,30 @@ from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ReleaseChannel
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s : %(levelname)s : %(message)s")
 load_dotenv(Path(PurePath(__file__).parents[1], ".env"))
 
-TIMEOUT_SECONDS: float = 15
+
+class Constants:
+    README_FILE_NAME: str = "README.md"
+    TIMEOUT_SECONDS: float = 15
+    CHROME_ARGS: list[str] = [
+        "--remote-debugging-port=9222",
+        "--headless=new",
+        "--window-size=1280,1024",
+    ]
 
 
 def configure_headless_chrome() -> webdriver.ChromeOptions:
     """Prepare and return chrome options for using selenium for testing via headless systems like Github Actions"""
     options = webdriver.ChromeOptions()
-    options.add_argument("--remote-debugging-port=9222")
-    options.add_argument("--headless=new")
-    options.add_argument("--window-size=1280,1024")
+    [options.add_argument(arg) for arg in Constants.CHROME_ARGS]
     return options
 
 
 def get_readme_html(new_file: Path) -> str:
     """Parses the README.md from the new build and returns an html-formatted string with image width limited"""
     zip_file = ZipFile(new_file)
-    if "README.md" in zip_file.namelist():
-        markdown_text = zip_file.read("README.md").decode("UTF-8")
-        soup = BeautifulSoup(markdown(markdown_text), "html.parser")
+    if Constants.README_FILE_NAME in zip_file.namelist():
+        markdown_text = zip_file.read(Constants.README_FILE_NAME).decode("UTF-8")
+        soup = BeautifulSoup(markdown(markdown_text, extensions=["extra", "nl2br", "smarty"]), "html.parser")
         for img in soup.find_all("img"):
             img["style"] = "max-width: 100%;"
         return str(soup)
@@ -52,7 +58,7 @@ def construct_objects() -> (Path, ForgeItem, ForgeURLs):
     """Gets the various objects needed to start uploading builds to the FG Forge"""
     new_file = get_build_file(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
     creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
-    item = ForgeItem(creds, os.environ["FG_ITEM_ID"], TIMEOUT_SECONDS)
+    item = ForgeItem(creds, os.environ["FG_ITEM_ID"], Constants.TIMEOUT_SECONDS)
     urls = ForgeURLs()
     return new_file, item, urls
 
