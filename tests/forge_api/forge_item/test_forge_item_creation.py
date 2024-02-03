@@ -2,8 +2,8 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from forge_api import ForgeItem
-from ..test_forge_credentials import ForgeCredentialsFactory
+from src.forge_api import ForgeItem
+from tests.forge_api.test_forge_credentials import ForgeCredentialsFactory
 
 
 def test_forge_item_creation() -> None:

@@ -8,7 +8,7 @@ ignore = ["C400", "C401"]
 
 [project]
 name = "fg-forge-updater"
-version = "0.0.1"
+version = "1.0.2"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { "file" = "LICENSE" }

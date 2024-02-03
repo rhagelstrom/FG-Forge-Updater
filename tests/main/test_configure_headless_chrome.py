@@ -1,4 +1,4 @@
-from main import configure_headless_chrome
+from src.main import configure_headless_chrome
 
 
 def convert_args_to_dict(args):
