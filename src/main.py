@@ -56,9 +56,7 @@ def get_build_file(file_path: PurePath, env_file: str) -> Path:
 
 
 def construct_objects() -> (list[Path], ForgeItem, ForgeURLs):
-    """Gets the various objects needed to start uploading builds to the FG Forge"""
-    file_names = os.environ["FG_UL_FILE"].split(",")
-    new_files = [get_build_file(PurePath(__file__).parents[1], file) for file in file_names]
+    new_files = [get_build_file(PurePath(__file__).parents[1], file) for file in os.environ["FG_UL_FILE"].split(",")]
     creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
     item = ForgeItem(creds, os.environ["FG_ITEM_ID"], Constants.TIMEOUT_SECONDS)
     urls = ForgeURLs()
