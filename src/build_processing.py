@@ -25,10 +25,8 @@ def table_styling(soup: BeautifulSoup) -> BeautifulSoup:
 def strip_images(soup: BeautifulSoup) -> BeautifulSoup:
     """Replace all images with boilerplate text"""
     for img in soup.find_all("img"):
-        if "alt" not in img:
-            img["alt"] = "[IMG]"
         new_tag = soup.new_tag("a", href=img["src"])
-        new_tag.string = img["alt"]
+        new_tag.string = img.get("alt", "[IMG]")
         img.replace_with(new_tag)
     return soup
 

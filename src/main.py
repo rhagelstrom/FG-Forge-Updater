@@ -43,10 +43,11 @@ def main() -> None:
     new_files, item, urls = construct_objects()
 
     with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
-        item.upload_and_publish(driver, urls, new_files, ReleaseChannel.LIVE)
+        channel = os.environ.get("FG_RELEASE_CHANNEL", ReleaseChannel.LIVE)
+        item.upload_and_publish(driver, urls, new_files, channel)
 
         readme_text = build_processing.get_readme(new_files)
-        readme_override = "FG_README_UPDATE" in os.environ and os.environ["FG_README_UPDATE"] == "FALSE"
+        readme_override = os.environ.get("FG_README_UPDATE", "TRUE") == "FALSE"
         if readme_text and not readme_override:
             item.update_description(driver, urls, readme_text)
 
