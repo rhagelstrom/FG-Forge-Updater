@@ -102,10 +102,9 @@ class ForgeItem:
         self.open_item_page(driver)
         self.set_latest_build_channel(driver, channel)
 
-    def add_build(self, driver: webdriver, new_builds: Path) -> None:
-        """Uploads a new build(s) to this Forge item, raising an exception if the new_builds isn't added to the dropzone or doesn't upload successfully."""
-        for build in new_builds:
-            add_file_to_dropzone(driver, self.timeout, build)
+    def add_build(self, driver: webdriver, new_builds: list[Path]) -> None:
+        """Uploads new build(s) to this Forge item via dropzone web element."""
+        [add_file_to_dropzone(driver, self.timeout, build) for build in new_builds]
 
         submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button.click()

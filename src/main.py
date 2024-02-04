@@ -34,8 +34,8 @@ def configure_headless_chrome() -> webdriver.ChromeOptions:
     return options
 
 
-def get_readme_html(new_files: Path) -> str:
-    """Parses the README.md from the new build and returns an html-formatted string with image width limited"""
+def get_readme_html(new_files: list[Path]) -> str:
+    """Parses the first README.md found in the new files and returns an html-formatted string"""
     for file in new_files:
         zip_file = ZipFile(file)
         if Constants.README_FILE_NAME in zip_file.namelist():
@@ -55,13 +55,10 @@ def get_build_file(file_path: PurePath, env_file: str) -> Path:
     return new_file
 
 
-def construct_objects() -> (Path, ForgeItem, ForgeURLs):
+def construct_objects() -> (list[Path], ForgeItem, ForgeURLs):
     """Gets the various objects needed to start uploading builds to the FG Forge"""
-    file_names = os.environ["FG_UL_FILE"].split(',')
-    new_files = []
-    for file in file_names:
-        new_files.append(get_build_file(PurePath(__file__).parents[1], file))
-    # new_file = get_build_file(PurePath(__file__).parents[1], os.environ["FG_UL_FILE"])
+    file_names = os.environ["FG_UL_FILE"].split(",")
+    new_files = [get_build_file(PurePath(__file__).parents[1], file) for file in file_names]
     creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
     item = ForgeItem(creds, os.environ["FG_ITEM_ID"], Constants.TIMEOUT_SECONDS)
     urls = ForgeURLs()
