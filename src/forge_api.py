@@ -92,7 +92,7 @@ class ForgeItem:
         except TimeoutException as e:
             raise TimeoutException(f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?") from e
 
-    def upload_and_publish(self, driver: webdriver, urls: ForgeURLs, new_files: Path, channel: str) -> None:
+    def upload_and_publish(self, driver: webdriver, urls: ForgeURLs, new_files: list[Path], channel: str) -> None:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
         self.login(driver, urls)
         self.open_items_list(driver, urls)
