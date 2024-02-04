@@ -7,8 +7,6 @@ from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from markdown import markdown
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
-
 README_FILE_NAME: str = "README.md"
 
 
@@ -32,15 +30,15 @@ def strip_images(soup: BeautifulSoup) -> BeautifulSoup:
     return soup
 
 
-def readme_html(readme) -> str:
+def readme_html(readme: ZipFile) -> str:
     """returns an html-formatted string"""
     markdown_text = readme.read(README_FILE_NAME).decode("UTF-8")
-    markdown_text_clean = re.sub("!\[]\(.+\)", "", markdown_text)
-    markdown_html = markdown(markdown_text_clean, extensions=["extra", "nl2br", "smarty"])
-    soup = BeautifulSoup(markdown_html, "html.parser")
-    soup = strip_images(soup)
-    soup = table_styling(soup)
-    return str(soup)
+    markdown_text_no_local_images = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
+    markdown_html = markdown(markdown_text_no_local_images, extensions=["extra", "nl2br", "smarty"])
+    parsed_html = BeautifulSoup(markdown_html, "html.parser")
+    parsed_html_image_links = strip_images(parsed_html)
+    parsed_html_pretty_tables = table_styling(parsed_html_image_links)
+    return str(parsed_html_pretty_tables)
 
 
 def get_readme(new_files: list[Path]) -> str:

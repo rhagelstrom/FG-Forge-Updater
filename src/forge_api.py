@@ -14,8 +14,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from dropzone import DropzoneErrorHandling, add_file_to_dropzone
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
-
 
 @dataclass(frozen=True, init=False)
 class ForgeURLs:
