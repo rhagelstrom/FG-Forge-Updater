@@ -2,7 +2,7 @@ import logging
 from pathlib import Path, PurePath
 from zipfile import ZipFile
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 from markdown import markdown
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
@@ -16,14 +16,14 @@ def table_styling(soup: BeautifulSoup) -> BeautifulSoup:
     return soup
 
 
-def limit_image_width(soup: BeautifulSoup) -> BeautifulSoup:
-    """Add max-width of 100% to all image elements on the page"""
-
-    def max_width(img: Tag):
-        """Add max-width of 100% to bs4 Tag object"""
-        img["style"] = "max-width: 100%;"
-
-    [max_width(img) for img in soup.find_all("img")]
+def strip_images(soup: BeautifulSoup) -> BeautifulSoup:
+    """Replace all images with boilerplate text"""
+    for img in soup.find_all("img"):
+        if "alt" not in img:
+            img["alt"] = "[IMG]"
+        new_tag = soup.new_tag("a", href=img["src"])
+        new_tag.string = img["alt"]
+        img.replace_with(new_tag)
     return soup
 
 
@@ -32,7 +32,7 @@ def readme_html(readme) -> str:
     markdown_text = readme.read(README_FILE_NAME).decode("UTF-8")
     markdown_html = markdown(markdown_text, extensions=["extra", "nl2br", "smarty"])
     soup = BeautifulSoup(markdown_html, "html.parser")
-    soup = limit_image_width(soup)
+    soup = strip_images(soup)
     soup = table_styling(soup)
     return str(soup)
 
