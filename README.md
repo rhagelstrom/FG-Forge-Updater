@@ -47,7 +47,7 @@ FG_USER_NAME=**********
 FG_USER_PASS=**********
 # the item ID of the FG Forge item you want to modify
 FG_ITEM_ID=33
-# the name of the ext file you want to upload
+# the name of the ext file you want to upload (can be comma-separated list)
 FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
 # optionally you can add this to prevent descriptions from being replaced with the contents of README.md
 FG_README_UPDATE=FALSE
