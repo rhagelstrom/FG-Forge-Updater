@@ -2,20 +2,18 @@
 
 # Forge Updater
 
-Herein lies a Python module that will upload builds to the FantasyGrounds Forge automatically via automation of a Chrome
-browser instance. It is intended for use in CI release workflows such as one I
-use [here](https://github.com/bmos/FG-PFRPG-Spell-Formatting/blob/main/.github/workflows/create-ext.yml).
+Uploads new builds to FantasyGrounds Forge and updates item page descriptions without requiring user input.
+It is intended for use in CI release workflows such as one Iuse [here](https://github.com/bmos/FG-PFRPG-Spell-Formatting/blob/main/.github/workflows/create-ext.yml).
 
 > [!WARNING]
 > At the moment, this will only work for the first page of 100 items found on a Forge account.
 
-## Features
+> [!WARNING]
+> Markdown parsing is not quite as permissive as GitHub. If you use tables, you must have an empty line directly before them.
 
-* Uploads new builds to FantasyGrounds Forge items.
-* Updates item descriptions based on README.md file included in root of build package (inside the .ext or .mod file).
-  Note that as Forge does not allow externally-hosted images, they will be stripped from the description when it is
-  submitted. To work around this, images are converted into links. To allow this, ensure that all of your images
-  have alt text and are externally-linked as a full URL (no relative GitHub file paths).
+> [!WARNING]
+> FG Forge does not allow inline images. To work around this, images are replaced by links using the image's alt text.
+> To ensure this can work, be sure to configure alt text on your README images and reference them via URL (not relative file paths).
 
 ## Getting Started
 
