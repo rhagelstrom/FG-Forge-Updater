@@ -1,3 +1,4 @@
+import itertools
 import logging
 from pathlib import Path, PurePath
 from zipfile import ZipFile
@@ -11,8 +12,13 @@ README_FILE_NAME: str = "README.md"
 
 
 def table_styling(soup: BeautifulSoup) -> BeautifulSoup:
-    """Add alternating background color to every other row of tables for visibility"""
-    # TODO: IMPLEMENT THIS
+    """Style tables for better legibility"""
+    colors = itertools.cycle(["#FFFFFF", "#E6E6E6"])
+    for html_table in soup.find_all("table"):
+        for col in html_table.find_all("td"):
+            col["style"] = "border:1px solid #000; padding:0.5em;"
+        for row in html_table.find_all("tr"):
+            row["style"] = f"background-color: {next(colors)}; border:1px solid #000;"
     return soup
 
 
