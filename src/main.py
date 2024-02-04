@@ -12,7 +12,6 @@ import build_processing
 from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ReleaseChannel
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
-load_dotenv(Path(PurePath(__file__).parents[1], ".env"))
 
 TIMEOUT_SECONDS: float = 7
 CHROME_ARGS: list[str] = [
@@ -30,6 +29,7 @@ def configure_headless_chrome() -> webdriver.ChromeOptions:
 
 
 def construct_objects() -> (list[Path], ForgeItem, ForgeURLs):
+    """Get the build files,"""
     new_files = [build_processing.get_build(PurePath(__file__).parents[1], file) for file in os.environ["FG_UL_FILE"].split(",")]
     creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
     item = ForgeItem(creds, os.environ["FG_ITEM_ID"], TIMEOUT_SECONDS)
@@ -39,12 +39,15 @@ def construct_objects() -> (list[Path], ForgeItem, ForgeURLs):
 
 def main() -> None:
     """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
+    load_dotenv(Path(PurePath(__file__).parents[1], ".env"))
     new_files, item, urls = construct_objects()
 
     with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
         item.upload_and_publish(driver, urls, new_files, ReleaseChannel.LIVE)
+
         readme_text = build_processing.get_readme(new_files)
-        if readme_text and "FG_README_UPDATE" not in os.environ or os.environ["FG_README_UPDATE"] != "FALSE":
+        readme_override = "FG_README_UPDATE" in os.environ and os.environ["FG_README_UPDATE"] == "FALSE"
+        if readme_text and not readme_override:
             item.update_description(driver, urls, readme_text)
 
 
