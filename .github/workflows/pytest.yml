@@ -3,24 +3,26 @@ name: Pytest
 on:
   push:
     paths:
-      - '**.py' # Run if pushed commits include a change to any Python (.py) file.
-      - '.github/workflows/pytest.yml' # Run if pushed commits include a change to this workflow file.
-      - 'pyproject.toml' # Run if project configuration file changes.
-
+      - "**.py"
+      - .github/workflows/pytest.yml
+      - pyproject.toml
   pull_request:
     paths:
-      - '**.py' # Run if pushed commits include a change to any Python (.py) file.
-      - '.github/workflows/pytest.yml' # Run if pushed commits include a change to this workflow file.
-      - 'pyproject.toml' # Run if project configuration file changes.
-
-  workflow_dispatch:
+      - "**.py"
+      - .github/workflows/pytest.yml
+      - pyproject.toml
+  workflow_dispatch: null
 
 jobs:
   pytest:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.12", "3.11", "3.10", "3.9"]
+        python-version:
+          - "3.12"
+          - "3.11"
+          - "3.10"
+          - "3.9"
 
     steps:
       - uses: actions/checkout@v4
@@ -29,7 +31,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
+          cache: pip
 
       - name: Install dependencies
         run: |
