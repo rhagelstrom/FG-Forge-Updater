@@ -83,7 +83,6 @@ class ForgeItem:
 
     def open_item_page(self, driver: webdriver) -> None:
         """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
-
         try:
             item_link = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link.click()
@@ -115,7 +114,6 @@ class ForgeItem:
 
     def set_latest_build_channel(self, driver: webdriver, channel: str) -> None:
         """Set the latest build as active on the Live release channel, raising an exception if the build selector isn't found."""
-
         try:
             item_builds_latest = Select(
                 WebDriverWait(driver, self.timeout).until(

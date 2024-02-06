@@ -3,6 +3,7 @@
 import logging
 import os
 from pathlib import Path, PurePath
+import getpass
 
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -30,9 +31,13 @@ def configure_headless_chrome() -> webdriver.ChromeOptions:
 
 def construct_objects() -> (list[Path], ForgeItem, ForgeURLs):
     """Get the build files,"""
-    new_files = [build_processing.get_build(PurePath(__file__).parents[1], file) for file in os.environ["FG_UL_FILE"].split(",")]
-    creds = ForgeCredentials(os.environ["FG_USER_NAME"], os.environ["FG_USER_PASS"])
-    item = ForgeItem(creds, os.environ["FG_ITEM_ID"], TIMEOUT_SECONDS)
+    file_names = os.environ.get("FG_UL_FILE") or input("Files to include in build (comma-separated and within project folder): ")
+    new_files = [build_processing.get_build(PurePath(__file__).parents[1], file) for file in file_names.split(",")]
+    user_name = os.environ.get("FG_USER_NAME") or input("FantasyGrounds username: ")
+    user_pass = os.environ.get("FG_USER_PASS") or getpass.getpass("FantasyGrounds password: ")
+    creds = ForgeCredentials(user_name, user_pass)
+    item_id = os.environ.get("FG_ITEM_ID") or input("Forge item ID: ")
+    item = ForgeItem(creds, item_id, TIMEOUT_SECONDS)
     urls = ForgeURLs()
     return new_files, item, urls
 
@@ -47,8 +52,8 @@ def main() -> None:
         item.upload_and_publish(driver, urls, new_files, channel)
 
         readme_text = build_processing.get_readme(new_files)
-        readme_override = os.environ.get("FG_README_UPDATE", "TRUE") == "FALSE"
-        if readme_text and not readme_override:
+        readme_update = bool(os.environ.get("FG_README_UPDATE", "TRUE"))
+        if readme_text and readme_update:
             item.update_description(driver, urls, readme_text)
 
 
