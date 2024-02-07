@@ -3,7 +3,7 @@
 # Forge Updater
 
 Uploads new builds to FantasyGrounds Forge and updates item page descriptions without requiring user input.
-It is intended for use in CI release workflows such as one Iuse [here](https://github.com/bmos/FG-PFRPG-Spell-Formatting/blob/main/.github/workflows/create-ext.yml).
+It is intended for use in CI release workflows such as one I use [here](https://github.com/bmos/fg-workflows/blob/main/create-release.yml).
 
 > [!WARNING]
 > At the moment, this will only work for the first page of 100 items found on a Forge account.
