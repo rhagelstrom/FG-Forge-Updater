@@ -4,13 +4,14 @@ import re
 from pathlib import Path, PurePath
 from zipfile import ZipFile
 
+import mdformat
 from bs4 import BeautifulSoup
 from markdown import markdown
 
-README_FILE_NAME: str = "README.md"
+README = "README.md"
 
 
-def table_styling(soup: BeautifulSoup) -> BeautifulSoup:
+def apply_styles_to_table(soup: BeautifulSoup) -> BeautifulSoup:
     """Style tables for better legibility"""
     colors = itertools.cycle(["#FFFFFF", "#E6E6E6"])
     for html_table in soup.find_all("table"):
@@ -21,7 +22,7 @@ def table_styling(soup: BeautifulSoup) -> BeautifulSoup:
     return soup
 
 
-def strip_images(soup: BeautifulSoup) -> BeautifulSoup:
+def replace_images_with_link(soup: BeautifulSoup) -> BeautifulSoup:
     """Replace all images with boilerplate text"""
     for img in soup.find_all("img"):
         new_tag = soup.new_tag("a", href=img["src"])
@@ -32,18 +33,19 @@ def strip_images(soup: BeautifulSoup) -> BeautifulSoup:
 
 def readme_html(readme: ZipFile) -> str:
     """returns an html-formatted string"""
-    markdown_text = readme.read(README_FILE_NAME).decode("UTF-8")
-    markdown_text_no_local_images = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
-    markdown_html = markdown(markdown_text_no_local_images, extensions=["extra", "nl2br", "smarty"])
-    parsed_html = BeautifulSoup(markdown_html, "html.parser")
-    parsed_html_image_links = strip_images(parsed_html)
-    parsed_html_pretty_tables = table_styling(parsed_html_image_links)
-    return str(parsed_html_pretty_tables)
+    markdown_text = readme.read(README).decode("UTF-8")
+    markdown_text = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
+    markdown_text = mdformat.text(markdown_text)
+    html = markdown(markdown_text, extensions=["extra", "nl2br", "smarty"])
+    html = BeautifulSoup(html, "html.parser")
+    html = replace_images_with_link(html)
+    html = apply_styles_to_table(html)
+    return str(html)
 
 
 def get_readme(new_files: list[Path]) -> str:
     """Parses the first README.md found in the new files and returns an html-formatted string"""
-    return next((readme_html(ZipFile(file)) for file in new_files if README_FILE_NAME in ZipFile(file).namelist()), None)
+    return next((readme_html(ZipFile(file)) for file in new_files if README in ZipFile(file).namelist()), None)
 
 
 def get_build(file_path: PurePath, env_file: str) -> Path:
