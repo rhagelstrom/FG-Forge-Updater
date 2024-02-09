@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, call
 
+import requestium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -30,13 +31,14 @@ def find_element(by: str, value: str) -> MagicMock:
 
 
 def test_forge_item_login() -> None:
-    mock_driver = MagicMock(spec=webdriver.Chrome)
-    mock_driver.find_element.side_effect = find_element
+    mock_session = MagicMock(spec=requestium.Session)
+    mock_session.driver = MagicMock(spec=webdriver.Chrome)
+    mock_session.driver.find_element.side_effect = find_element
 
     creds = ForgeCredentialsFactory.build()
     item = ForgeItem(creds, "33", 1)
-    item.login(mock_driver, ForgeURLs())
+    item.login(mock_session, ForgeURLs())
     expected_find_element = [call(by, value) for (by, value) in TEST_CALLS]
     expected_find_element.append(call(By.XPATH, "//div[@class='blockrow restore']"))  # login failure message
     expected_find_element.append(call(By.XPATH, "//div[@class='blockrow restore']"))  # login failure message
-    assert mock_driver.find_element.mock_calls == expected_find_element
+    assert mock_session.driver.find_element.mock_calls == expected_find_element

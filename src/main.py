@@ -1,13 +1,13 @@
 """Automation to enable uploading a new fantasygrounds mod or ext file to the FG Forge and publishing it to the Live channel"""
 
+import getpass
 import logging
 import os
 from pathlib import Path, PurePath
-import getpass
 
-from dotenv import load_dotenv
+import requestium
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from dotenv import load_dotenv
 
 import build_processing
 from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ReleaseChannel
@@ -47,14 +47,14 @@ def main() -> None:
     load_dotenv(Path(PurePath(__file__).parents[1], ".env"))
     new_files, item, urls = construct_objects()
 
-    with webdriver.Chrome(service=Service(), options=configure_headless_chrome()) as driver:
+    with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s:
         channel = os.environ.get("FG_RELEASE_CHANNEL", ReleaseChannel.LIVE)
-        item.upload_and_publish(driver, urls, new_files, channel)
+        item.upload_and_publish(s, urls, new_files, channel)
 
         readme_text = build_processing.get_readme(new_files)
         readme_update = bool(os.environ.get("FG_README_UPDATE", "TRUE"))
         if readme_text and readme_update:
-            item.update_description(driver, urls, readme_text)
+            item.update_description(s, urls, readme_text)
 
 
 if __name__ == "__main__":
