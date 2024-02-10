@@ -8,6 +8,7 @@ from pathlib import Path
 
 import requestium
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -87,20 +88,20 @@ class ForgeItem:
             except TimeoutException as e:
                 raise TimeoutException("No username or password field found, or login button is not clickable.") from e
 
-    def open_items_list(self, session: requestium.Session, urls: ForgeURLs) -> None:
+    def open_items_list(self, driver: webdriver, urls: ForgeURLs) -> None:
         """Open the manage craft page, raising an exception if the item table size selector isn't found."""
-        session.driver.get(urls.MANAGE_CRAFT)
+        driver.get(urls.MANAGE_CRAFT)
 
         try:
-            items_per_page = Select(WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "items-table_length"))))
+            items_per_page = Select(WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "items-table_length"))))
             items_per_page.select_by_visible_text("100")
         except TimeoutException as e:
             raise TimeoutException("Could not load the Manage Craft page!") from e
 
-    def open_item_page(self, session: requestium.Session) -> None:
+    def open_item_page(self, driver: webdriver) -> None:
         """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
         try:
-            item_link = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
+            item_link = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link.click()
         except TimeoutException as e:
             raise TimeoutException(f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?") from e
@@ -109,20 +110,20 @@ class ForgeItem:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
         self.login(session, urls)
         logging.info("Uploading new build to Forge item")
-        self.open_items_list(session, urls)
-        self.open_item_page(session)
-        self.add_build(session, new_files)
+        self.open_items_list(session.driver, urls)
+        self.open_item_page(session.driver)
+        self.add_build(session.driver, new_files)
         latest_build = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))
         self.set_build_channel(session, urls, latest_build["build_num"], channel)
 
-    def add_build(self, session: requestium.Session, new_builds: list[Path]) -> None:
+    def add_build(self, driver: webdriver, new_builds: list[Path]) -> None:
         """Uploads new build(s) to this Forge item via dropzone web element."""
-        [add_file_to_dropzone(session.driver, self.timeout, build) for build in new_builds]
+        [add_file_to_dropzone(driver, self.timeout, build) for build in new_builds]
 
-        submit_button = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
+        submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button.click()
 
-        dropzone_errors = DropzoneErrorHandling(session.driver, self.timeout)
+        dropzone_errors = DropzoneErrorHandling(driver, self.timeout)
         dropzone_errors.check_report_toast_error()
         dropzone_errors.check_report_dropzone_upload_error()
         dropzone_errors.check_report_upload_percentage()
@@ -142,17 +143,17 @@ class ForgeItem:
         )
         return response.status_code == 200
 
-    def replace_description(self, session: requestium.Session, description_text: str) -> None:
+    def replace_description(self, driver: webdriver, description_text: str) -> None:
         """Replaces the existing item description with a new HTML-formatted full description"""
-        uploads_tab = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-item-tab']")))
+        uploads_tab = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-item-tab']")))
         uploads_tab.click()
 
-        submit_button = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "save-item-button")))
+        submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "save-item-button")))
 
-        description_field = session.driver.find_element(By.XPATH, "//div[@id='manage-item']").find_element(By.CLASS_NAME, "note-editable")
+        description_field = driver.find_element(By.XPATH, "//div[@id='manage-item']").find_element(By.CLASS_NAME, "note-editable")
         description_field.clear()
         logging.info("Forge item description cleared")
-        session.driver.execute_script("arguments[0].innerHTML = arguments[1];", description_field, description_text)
+        driver.execute_script("arguments[0].innerHTML = arguments[1];", description_field, description_text)
         time.sleep(0.25)
 
         submit_button.click()
@@ -163,6 +164,6 @@ class ForgeItem:
         """Coordinates sequential use of other class methods to update the item description for an item on the FG Forge"""
         self.login(session, urls)
         logging.info("Updating Forge item description")
-        self.open_items_list(session, urls)
-        self.open_item_page(session)
-        self.replace_description(session, description)
+        self.open_items_list(session.driver, urls)
+        self.open_item_page(session.driver)
+        self.replace_description(session.driver, description)
