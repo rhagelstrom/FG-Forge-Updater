@@ -5,7 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from forge_api import ForgeItem, ForgeURLs
+from src.forge_api import ForgeItem, ForgeURLs
 from ..test_forge_credentials import ForgeCredentialsFactory
 
 TEST_CALLS = [

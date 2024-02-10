@@ -3,17 +3,20 @@
 # Forge Updater
 
 Uploads new builds to FantasyGrounds Forge and updates item page descriptions without requiring user input.
-It is intended for use in CI release workflows such as one I use [here](https://github.com/bmos/fg-workflows/blob/main/create-release.yml).
+It is intended for use in CI release workflows such as one I
+use [here](https://github.com/bmos/fg-workflows/blob/main/create-release.yml).
 
 > [!WARNING]
 > At the moment, this will only work for the first page of 100 items found on a Forge account.
 
 > [!WARNING]
-> Markdown parsing is not quite as permissive as GitHub. If you use tables, you must have an empty line directly before them.
+> Markdown parsing is not quite as permissive as GitHub. If you use tables, you must have an empty line directly before
+> them.
 
 > [!WARNING]
 > FG Forge does not allow inline images. To work around this, images are replaced by links using the image's alt text.
-> To ensure this can work, be sure to configure alt text on your README images and reference them via URL (not relative file paths).
+> To ensure this can work, be sure to configure alt text on your README images and reference them via URL (not relative
+> file paths).
 
 ## Getting Started
 
@@ -48,8 +51,8 @@ FG_USER_PASS=**********
 FG_ITEM_ID=33
 # the name of the ext file you want to upload (can be comma-separated list)
 FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
-# [OPTIONAL] set this to false to prevent replacing the description with the contents of README.md
-FG_README_UPDATE=FALSE
+# [OPTIONAL] set this to FALSE to prevent replacing the description with the contents of README.md
+FG_README_UPDATE=TRUE
 # [OPTIONAL] set this to "Test" or "No Channel" if you would rather target those channels
 FG_RELEASE_CHANNEL=Live
 ```

@@ -2,7 +2,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from forge_api import ForgeItem
+from src.forge_api import ForgeItem
 from ..test_forge_credentials import ForgeCredentialsFactory
 
 
