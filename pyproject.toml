@@ -2,7 +2,7 @@
 name = "fg-forge-updater"
 version = "1.0.2"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "bmos", email = "wil.thieme@protonmail.com" }]
 urls = { Repository = "https://github.com/bmos/fg_forge_updater" }

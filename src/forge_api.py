@@ -3,9 +3,11 @@
 import logging
 import time
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 
 import requestium
+from bs4 import BeautifulSoup
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,21 +17,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from dropzone import DropzoneErrorHandling, add_file_to_dropzone
 
 
+class ReleaseChannel(Enum):
+    """Constants representing the strings used to represent each release channel in build-management comboboxes"""
+
+    LIVE: str = "1"
+    TEST: str = "2"
+    NONE: str = "0"
+
+
 @dataclass(frozen=True, init=False)
 class ForgeURLs:
     """Contains URL strings for webpages used on the forge"""
 
     MANAGE_CRAFT: str = "https://forge.fantasygrounds.com/crafter/manage-craft"
-    API_CRAFTER_ITEMS: str = "https://forge.fantasygrounds.com/api/crafter/items"
-
-
-@dataclass(frozen=True, init=False)
-class ReleaseChannel:
-    """Constants representing the strings used to represent each release channel in build-management comboboxes"""
-
-    LIVE: str = "Live"
-    TEST: str = "Test"
-    NONE: str = "No Channel"
+    API_BASE: str = "https://forge.fantasygrounds.com/api"
+    API_CRAFTER_ITEMS: str = f"{API_BASE}/crafter/items"
 
 
 @dataclass(frozen=True)
@@ -38,6 +40,14 @@ class ForgeCredentials:
 
     username: str
     password: str
+
+    @staticmethod
+    def get_csrf_token(session: requestium.Session, urls: ForgeURLs) -> str | None:
+        response = session.get(
+            urls.MANAGE_CRAFT,
+        )
+        soup = BeautifulSoup(response.content, "html.parser")
+        return soup.find(attrs={"name": "csrf-token"}).get("content")
 
 
 @dataclass(frozen=True)
@@ -67,6 +77,8 @@ class ForgeItem:
                 raise Exception(f"Attempted login as {self.creds.username} was unsuccessful")
             except TimeoutException:
                 logging.info(f"Logged in as {self.creds.username}")
+                session.transfer_driver_cookies_to_session(copy_user_agent=True)
+                session.headers.update({"X-CSRF-TOKEN": self.creds.get_csrf_token(session, urls)})
 
         except TimeoutException:
             try:
@@ -96,12 +108,12 @@ class ForgeItem:
     def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: str) -> None:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
         self.login(session, urls)
+        logging.info("Uploading new build to Forge item")
         self.open_items_list(session, urls)
         self.open_item_page(session)
         self.add_build(session, new_files)
-        self.open_items_list(session, urls)
-        self.open_item_page(session)
-        self.set_latest_build_channel(session, channel)
+        latest_build = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))
+        self.set_build_channel(session, urls, latest_build["build_num"], channel)
 
     def add_build(self, session: requestium.Session, new_builds: list[Path]) -> None:
         """Uploads new build(s) to this Forge item via dropzone web element."""
@@ -116,18 +128,19 @@ class ForgeItem:
         dropzone_errors.check_report_upload_percentage()
         logging.info("Build upload complete")
 
-    def set_latest_build_channel(self, session: requestium.Session, channel: str) -> None:
-        """Set the latest build as active on the Live release channel, raising an exception if the build selector isn't found."""
-        try:
-            item_builds_latest = Select(
-                WebDriverWait(session.driver, self.timeout).until(
-                    EC.presence_of_element_located((By.XPATH, "//select[@class='form-control item-build-channel item-build-option']"))
-                )
-            )
-            item_builds_latest.select_by_visible_text(channel)
-            logging.info(f"Set build channel: {channel}")
-        except TimeoutException as e:
-            raise TimeoutException(f"Could not find item page, is {self.item_id} the correct item id?") from e
+    def get_item_builds(self, session: requestium.Session, urls: ForgeURLs) -> dict | None:
+        """Retrieve a list of builds for this Forge item, with ID, build number, upload date, and current channel"""
+        response = session.post(
+            f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/data-table",
+        )
+        return response.json()["data"]
+
+    def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_num: str, channel: str) -> bool:
+        """Sets the build channel of this Forge item to the specified value, returning True on 200 OK"""
+        response = session.post(
+            f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_num}/channels/{channel}",
+        )
+        return response.status_code == 200
 
     def replace_description(self, session: requestium.Session, description_text: str) -> None:
         """Replaces the existing item description with a new HTML-formatted full description"""
@@ -148,8 +161,8 @@ class ForgeItem:
 
     def update_description(self, session: requestium.Session, urls: ForgeURLs, description: str) -> None:
         """Coordinates sequential use of other class methods to update the item description for an item on the FG Forge"""
-        logging.info("Updating Forge item description")
         self.login(session, urls)
+        logging.info("Updating Forge item description")
         self.open_items_list(session, urls)
         self.open_item_page(session)
         self.replace_description(session, description)

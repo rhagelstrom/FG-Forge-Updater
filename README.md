@@ -20,7 +20,7 @@ use [here](https://github.com/bmos/fg-workflows/blob/main/create-release.yml).
 
 ## Getting Started
 
-To run this code, you'll need to have Python 3.9, 3.10, 3.11, or 3.12 installed on your machine. You'll also need to
+To run this code, you'll need to have Python 3.10, 3.11, or 3.12 installed on your machine. You'll also need to
 install the required packages by running the following commands from inside the project folder:
 
 ```shell
@@ -39,27 +39,27 @@ python -m pip install .
 
 1. Create a `.env` file in the project folder containing the following (but with your information):
 
-> [!NOTE]
-> You can add these values directly to your environment variables.
+   > [!NOTE]
+   > You can add these values directly to your environment variables.
 
-```env
-# your FG forum username
-FG_USER_NAME=**********
-# your FG forum password
-FG_USER_PASS=**********
-# the item ID of the FG Forge item you want to modify
-FG_ITEM_ID=33
-# the name of the ext file you want to upload (can be comma-separated list)
-FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
-# [OPTIONAL] set this to FALSE to prevent replacing the description with the contents of README.md
-FG_README_UPDATE=TRUE
-# [OPTIONAL] set this to "Test" or "No Channel" if you would rather target those channels
-FG_RELEASE_CHANNEL=Live
-```
+    ```env
+    # your FG forum username
+    FG_USER_NAME=**********
+    # your FG forum password
+    FG_USER_PASS=**********
+    # the item ID of the FG Forge item you want to modify
+    FG_ITEM_ID=33
+    # the name of the ext file you want to upload (can be comma-separated list)
+    FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
+    # [OPTIONAL] set this to FALSE to prevent replacing the description with the contents of README.md
+    FG_README_UPDATE=TRUE
+    # [OPTIONAL] set this to "TEST" or "NONE" if you would rather target those channels
+    FG_RELEASE_CHANNEL=LIVE
+    ```
 
 2. Put an ext file to upload into the project folder.
 3. Run the following command from inside the project folder:
 
-```shell
-python src/main.py
-```
+    ```shell
+    python src/main.py
+    ```
