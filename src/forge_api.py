@@ -113,8 +113,9 @@ class ForgeItem:
         self.open_items_list(session.driver, urls)
         self.open_item_page(session.driver)
         self.add_build(session.driver, new_files)
-        latest_build = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))
-        self.set_build_channel(session, urls, latest_build["build_num"], channel)
+        if channel != ReleaseChannel.NONE:
+            latest_build = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))
+            self.set_build_channel(session, urls, latest_build["build_num"], channel)
 
     def add_build(self, driver: webdriver, new_builds: list[Path]) -> None:
         """Uploads new build(s) to this Forge item via dropzone web element."""
