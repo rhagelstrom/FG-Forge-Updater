@@ -48,7 +48,7 @@ def main() -> None:
     new_files, item, urls = construct_objects()
 
     with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s:
-        channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()].value
+        channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
         item.upload_and_publish(s, urls, new_files, channel)
 
         readme_text = build_processing.get_readme(new_files)

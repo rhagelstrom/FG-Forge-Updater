@@ -77,7 +77,7 @@ class ForgeItem:
                 WebDriverWait(session.driver, self.timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@class='blockrow restore']")))
                 raise Exception(f"Attempted login as {self.creds.username} was unsuccessful")
             except TimeoutException:
-                logging.info(f"Logged in as {self.creds.username}")
+                logging.info("Logged in as %s", self.creds.username)
                 session.transfer_driver_cookies_to_session(copy_user_agent=True)
                 session.headers.update({"X-CSRF-TOKEN": self.creds.get_csrf_token(session, urls)})
 
@@ -106,16 +106,21 @@ class ForgeItem:
         except TimeoutException as e:
             raise TimeoutException(f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?") from e
 
-    def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: str) -> None:
+    def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: ReleaseChannel) -> None:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
         self.login(session, urls)
         logging.info("Uploading new build to Forge item")
         self.open_items_list(session.driver, urls)
         self.open_item_page(session.driver)
         self.add_build(session.driver, new_files)
-        if channel != ReleaseChannel.NONE:
-            latest_build = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))
-            self.set_build_channel(session, urls, latest_build["build_num"], channel)
+
+        if channel is ReleaseChannel.NONE:
+            logging.info("Target channel is set to none, not setting new build to a release channel.")
+            return
+        latest_build = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))
+        logging.info("Retrieved latest build info: %s", latest_build)
+        logging.info("Assigning new build to Forge channel: %s: %s", channel, channel.value)
+        self.set_build_channel(session, urls, latest_build["build_num"], channel)
 
     def add_build(self, driver: webdriver, new_builds: list[Path]) -> None:
         """Uploads new build(s) to this Forge item via dropzone web element."""
@@ -137,10 +142,10 @@ class ForgeItem:
         )
         return response.json()["data"]
 
-    def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_num: str, channel: str) -> bool:
+    def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_num: str, channel: ReleaseChannel) -> bool:
         """Sets the build channel of this Forge item to the specified value, returning True on 200 OK"""
         response = session.post(
-            f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_num}/channels/{channel}",
+            f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_num}/channels/{channel.value}",
         )
         return response.status_code == 200
 
