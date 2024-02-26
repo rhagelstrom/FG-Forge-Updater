@@ -52,7 +52,7 @@ def main() -> None:
         item.upload_and_publish(s, urls, new_files, channel)
 
         readme_text = build_processing.get_readme(new_files)
-        readme_update = bool(os.environ.get("FG_README_UPDATE", "TRUE"))
+        readme_update = os.environ.get("FG_README_UPDATE", "TRUE") == "TRUE"
         if readme_text and readme_update:
             item.update_description(s, urls, readme_text)
 
