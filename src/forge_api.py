@@ -117,10 +117,9 @@ class ForgeItem:
         if channel is ReleaseChannel.NONE:
             logging.info("Target channel is set to none, not setting new build to a release channel.")
             return
-        latest_build = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))
-        logging.info("Retrieved latest build info: %s", latest_build)
+        latest_build_id = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))["id"]
         logging.info("Assigning new build to Forge channel: %s: %s", channel, channel.value)
-        self.set_build_channel(session, urls, latest_build["build_num"], channel)
+        self.set_build_channel(session, urls, latest_build_id, channel)
 
     def add_build(self, driver: webdriver, new_builds: list[Path]) -> None:
         """Uploads new build(s) to this Forge item via dropzone web element."""
@@ -142,10 +141,10 @@ class ForgeItem:
         )
         return response.json()["data"]
 
-    def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_num: str, channel: ReleaseChannel) -> bool:
+    def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_id: str, channel: ReleaseChannel) -> bool:
         """Sets the build channel of this Forge item to the specified value, returning True on 200 OK"""
         response = session.post(
-            f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_num}/channels/{channel.value}",
+            f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_id}/channels/{channel.value}",
         )
         return response.status_code == 200
 
