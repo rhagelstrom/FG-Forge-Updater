@@ -25,8 +25,7 @@ dev = [
     "ruff==0.2.2"
 ]
 github-actions = [
-    "pytest-emoji==0.2.0",
-    "pytest-md==0.2.0",
+    "pytest-cov==4.1.0",
     "ydiff==1.2"
 ]
 

@@ -18,21 +18,25 @@ use [here](https://github.com/bmos/fg-workflows/blob/main/create-release.yml).
 > To ensure this can work, be sure to configure alt text on your README images and reference them via URL (not relative
 > file paths).
 
-## Getting Started
+## Getting Started / Before Using
 
 To run this code, you'll need to have Python 3.10, 3.11, or 3.12 installed on your machine. You'll also need to
 install the required packages by running the following commands from inside the project folder:
 
 ```shell
-python -m venv venv
+pip install -U pip uv
 ```
 
 ```shell
-source venv/bin/activate
+uv venv
 ```
 
 ```shell
-python -m pip install .
+source .venv/bin/activate
+```
+
+```shell
+uv pip install .
 ```
 
 ## Usage
