@@ -8,7 +8,7 @@ from pathlib import Path
 
 import requestium
 from bs4 import BeautifulSoup
-from selenium import webdriver
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -49,7 +49,7 @@ class ForgeCredentials:
             urls.MANAGE_CRAFT,
         )
         soup = BeautifulSoup(response.content, "html.parser")
-        return soup.find(attrs={"name": "csrf-token"}).get("content")
+        return str(soup.find(attrs={"name": "csrf-token"}).get("content"))
 
 
 @dataclass(frozen=True)
@@ -89,7 +89,7 @@ class ForgeItem:
             except TimeoutException as e:
                 raise TimeoutException("No username or password field found, or login button is not clickable.") from e
 
-    def open_items_list(self, driver: webdriver, urls: ForgeURLs) -> None:
+    def open_items_list(self, driver: WebDriver, urls: ForgeURLs) -> None:
         """Open the manage craft page, raising an exception if the item table size selector isn't found."""
         driver.get(urls.MANAGE_CRAFT)
 
@@ -99,7 +99,7 @@ class ForgeItem:
         except TimeoutException as e:
             raise TimeoutException("Could not load the Manage Craft page!") from e
 
-    def open_item_page(self, driver: webdriver) -> None:
+    def open_item_page(self, driver: WebDriver) -> None:
         """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
         try:
             item_link = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
@@ -122,7 +122,7 @@ class ForgeItem:
         logging.info("Assigning new build to Forge channel: %s: %s", channel, channel.value)
         self.set_build_channel(session, urls, latest_build_id, channel)
 
-    def add_build(self, driver: webdriver, new_builds: list[Path]) -> None:
+    def add_build(self, driver: WebDriver, new_builds: list[Path]) -> None:
         """Uploads new build(s) to this Forge item via dropzone web element."""
         [add_file_to_dropzone(driver, self.timeout, build) for build in new_builds]
 
@@ -137,13 +137,14 @@ class ForgeItem:
 
     def get_sales(self, session: requestium.Session, urls: ForgeURLs, limit_count: int = -1) -> list:
         """Retrieve a list of sales for this Forge item, filter it by item_id and return the filtered list."""
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
         response = session.post(urls.API_SALES, data=f"draw=1&length={limit_count}", headers=headers)
         sales = response.json()["data"]
 
-        item_sales = [sale for sale in sales if sale["item_id"] == self.item_id]
+        def is_item_sale(s):
+            return s["item_id"] == self.item_id and s["transaction_type_id"] == "2"
 
-        return item_sales
+        return [sale for sale in sales if is_item_sale(sale)]
 
     def get_item_builds(self, session: requestium.Session, urls: ForgeURLs) -> dict | None:
         """Retrieve a list of builds for this Forge item, with ID, build number, upload date, and current channel"""
@@ -159,7 +160,7 @@ class ForgeItem:
         )
         return response.status_code == 200
 
-    def replace_description(self, driver: webdriver, description_text: str) -> None:
+    def replace_description(self, driver: WebDriver, description_text: str) -> None:
         """Replaces the existing item description with a new HTML-formatted full description"""
         uploads_tab = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-item-tab']")))
         uploads_tab.click()

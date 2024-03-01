@@ -25,11 +25,12 @@ CHROME_ARGS: list[str] = [
 def configure_headless_chrome() -> webdriver.ChromeOptions:
     """Prepare and return chrome options for using selenium for testing via headless systems like Github Actions"""
     options = webdriver.ChromeOptions()
-    [options.add_argument(arg) for arg in CHROME_ARGS]
+    for arg in CHROME_ARGS:
+        options.add_argument(arg)
     return options
 
 
-def construct_objects() -> (list[Path], ForgeItem, ForgeURLs):
+def construct_objects() -> tuple[list[Path], ForgeItem, ForgeURLs]:
     """Get the build files,"""
     file_names = os.environ.get("FG_UL_FILE") or input("Files to include in build (comma-separated and within project folder): ")
     new_files = [build_processing.get_build(PurePath(__file__).parents[1], file) for file in file_names.split(",")]
@@ -46,14 +47,14 @@ def main() -> None:
     """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
     load_dotenv(Path(PurePath(__file__).parents[1], ".env"))
     new_files, item, urls = construct_objects()
+    readme_text = ""
 
     with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s:
         channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
         item.upload_and_publish(s, urls, new_files, channel)
-
-        readme_text = build_processing.get_readme(new_files)
-        readme_update = os.environ.get("FG_README_UPDATE", "TRUE") == "TRUE"
-        if readme_text and readme_update:
+        if os.environ.get("FG_README_UPDATE", "TRUE") == "TRUE":
+            readme_text = build_processing.get_readme(new_files)
+        if readme_text != "":
             item.update_description(s, urls, readme_text)
 
 

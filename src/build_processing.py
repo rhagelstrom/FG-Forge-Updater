@@ -11,7 +11,7 @@ from markdown import markdown
 README = "README.md"
 
 
-def apply_styles_to_table(soup: BeautifulSoup) -> BeautifulSoup:
+def apply_styles_to_table(soup: str) -> str:
     """Style tables for better legibility"""
     colors = itertools.cycle(["#FFFFFF", "#E6E6E6"])
     for html_table in soup.find_all("table"):
@@ -22,7 +22,7 @@ def apply_styles_to_table(soup: BeautifulSoup) -> BeautifulSoup:
     return soup
 
 
-def replace_images_with_link(soup: BeautifulSoup) -> BeautifulSoup:
+def replace_images_with_link(soup: str) -> str:
     """Replace all images with boilerplate text"""
     for img in soup.find_all("img"):
         new_tag = soup.new_tag("a", href=img["src"])
@@ -45,7 +45,7 @@ def readme_html(readme: ZipFile) -> str:
 
 def get_readme(new_files: list[Path]) -> str:
     """Parses the first README.md found in the new files and returns an html-formatted string"""
-    return next((readme_html(ZipFile(file)) for file in new_files if README in ZipFile(file).namelist()), None)
+    return next((readme_html(ZipFile(file)) for file in new_files if README in ZipFile(file).namelist()), "")
 
 
 def get_build(file_path: PurePath, env_file: str) -> Path:

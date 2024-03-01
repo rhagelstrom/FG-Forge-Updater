@@ -5,7 +5,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from selenium import webdriver
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -26,7 +26,7 @@ class LongUploadException(BaseException):
 
 @dataclass
 class DropzoneErrorHandling:
-    driver: webdriver
+    driver: WebDriver
     timeout_seconds: float = 7
 
     def check_report_toast_error(self) -> None:
@@ -64,7 +64,7 @@ class DropzoneErrorHandling:
             logging.info("No file progress bars found")
 
 
-def add_file_to_dropzone(driver: webdriver, timeout: float, upload_file: Path) -> None:
+def add_file_to_dropzone(driver: WebDriver, timeout: float, upload_file: Path) -> None:
     """Open the uploads tab, add file to second upload dropzone found after short pause, and ensure file progress bar appears"""
     uploads_tab = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-build-uploads-tab']")))
     uploads_tab.click()
