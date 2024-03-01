@@ -33,6 +33,7 @@ class ForgeURLs:
     MANAGE_CRAFT: str = "https://forge.fantasygrounds.com/crafter/manage-craft"
     API_BASE: str = "https://forge.fantasygrounds.com/api"
     API_CRAFTER_ITEMS: str = f"{API_BASE}/crafter/items"
+    API_SALES: str = f"{API_BASE}/transactions/data-table"
 
 
 @dataclass(frozen=True)
@@ -133,6 +134,16 @@ class ForgeItem:
         dropzone_errors.check_report_dropzone_upload_error()
         dropzone_errors.check_report_upload_percentage()
         logging.info("Build upload complete")
+
+    def get_sales(self, session: requestium.Session, urls: ForgeURLs, limit_count: int = -1) -> list:
+        """Retrieve a list of sales for this Forge item, filter it by item_id and return the filtered list."""
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        response = session.post(urls.API_SALES, data=f"draw=1&length={limit_count}", headers=headers)
+        sales = response.json()["data"]
+
+        item_sales = [sale for sale in sales if sale["item_id"] == self.item_id]
+
+        return item_sales
 
     def get_item_builds(self, session: requestium.Session, urls: ForgeURLs) -> dict | None:
         """Retrieve a list of builds for this Forge item, with ID, build number, upload date, and current channel"""
