@@ -6,8 +6,8 @@ import os
 from pathlib import Path, PurePath
 
 import requestium
-from selenium import webdriver
 from dotenv import load_dotenv
+from selenium import webdriver
 
 import build_processing
 from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ReleaseChannel
