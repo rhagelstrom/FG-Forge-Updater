@@ -9,7 +9,6 @@ on:
   pull_request:
     paths:
       - "**.py"
-      - .github/workflows/lint-python.yml
       - pyproject.toml
   workflow_dispatch:
 
@@ -31,7 +30,7 @@ jobs:
       security-events: write
       actions: read
       contents: read
-    
+
     steps:
       - uses: actions/checkout@v4
 
