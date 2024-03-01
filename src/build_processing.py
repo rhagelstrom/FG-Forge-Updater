@@ -22,30 +22,30 @@ def apply_styles_to_table(soup: str) -> str:
     return soup
 
 
-def replace_images_with_link(soup: str) -> str:
+def replace_images_with_link(soup: str, no_images: bool) -> str:
     """Replace all images with boilerplate text"""
     for img in soup.find_all("img"):
         new_tag = soup.new_tag("a", href=img["src"])
-        new_tag.string = img.get("alt", "[IMG]")
+        new_tag.string = "" if no_images else img.get("alt", "[IMG]")
         img.replace_with(new_tag)
     return soup
 
 
-def readme_html(readme: ZipFile) -> str:
+def readme_html(readme: ZipFile, no_images: bool = False) -> str:
     """returns an html-formatted string"""
     markdown_text = readme.read(README).decode("UTF-8")
     markdown_text = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
     markdown_text = mdformat.text(markdown_text)
     html = markdown(markdown_text, extensions=["extra", "nl2br", "smarty"])
     html = BeautifulSoup(html, "html.parser")
-    html = replace_images_with_link(html)
+    html = replace_images_with_link(html, no_images)
     html = apply_styles_to_table(html)
     return str(html)
 
 
-def get_readme(new_files: list[Path]) -> str:
+def get_readme(new_files: list[Path], no_images: bool = False) -> str:
     """Parses the first README.md found in the new files and returns an html-formatted string"""
-    return next((readme_html(ZipFile(file)) for file in new_files if README in ZipFile(file).namelist()), "")
+    return next((readme_html(ZipFile(file), no_images) for file in new_files if README in ZipFile(file).namelist()), "")
 
 
 def get_build(file_path: PurePath, env_file: str) -> Path:

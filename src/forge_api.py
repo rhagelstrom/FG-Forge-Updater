@@ -141,8 +141,8 @@ class ForgeItem:
         response = session.post(urls.API_SALES, data=f"draw=1&length={limit_count}", headers=headers)
         sales = response.json()["data"]
 
-        def is_item_sale(s):
-            return s["item_id"] == self.item_id and s["transaction_type_id"] == "2"
+        def is_item_sale(sale):
+            return sale["item_id"] == self.item_id and sale["transaction_type_id"] == "2"
 
         return [sale for sale in sales if is_item_sale(sale)]
 
