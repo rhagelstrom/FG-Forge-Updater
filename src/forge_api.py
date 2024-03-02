@@ -146,7 +146,7 @@ class ForgeItem:
 
         return [sale for sale in sales if is_item_sale(sale)]
 
-    def get_item_builds(self, session: requestium.Session, urls: ForgeURLs) -> dict | None:
+    def get_item_builds(self, session: requestium.Session, urls: ForgeURLs) -> dict:
         """Retrieve a list of builds for this Forge item, with ID, build number, upload date, and current channel"""
         response = session.post(
             f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/data-table",

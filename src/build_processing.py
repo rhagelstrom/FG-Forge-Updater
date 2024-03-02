@@ -11,7 +11,7 @@ from markdown import markdown
 README = "README.md"
 
 
-def apply_styles_to_table(soup: str) -> str:
+def apply_styles_to_table(soup: BeautifulSoup) -> BeautifulSoup:
     """Style tables for better legibility"""
     colors = itertools.cycle(["#FFFFFF", "#E6E6E6"])
     for html_table in soup.find_all("table"):
@@ -22,7 +22,7 @@ def apply_styles_to_table(soup: str) -> str:
     return soup
 
 
-def replace_images_with_link(soup: str, no_images: bool) -> str:
+def replace_images_with_link(soup: BeautifulSoup, no_images: bool) -> BeautifulSoup:
     """Replace all images with boilerplate text"""
     for img in soup.find_all("img"):
         new_tag = soup.new_tag("a", href=img["src"])

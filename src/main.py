@@ -1,5 +1,4 @@
 """Automation to enable uploading a new fantasygrounds mod or ext file to the FG Forge and publishing it to the Live channel"""
-
 import getpass
 import logging
 import os
@@ -11,6 +10,7 @@ from selenium import webdriver
 
 import build_processing
 from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ReleaseChannel
+from users_graph import graph_users
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
 
@@ -31,7 +31,6 @@ def configure_headless_chrome() -> webdriver.ChromeOptions:
 
 
 def construct_objects() -> tuple[list[Path], ForgeItem, ForgeURLs]:
-    """Get the build files,"""
     file_names = os.environ.get("FG_UL_FILE") or input("Files to include in build (comma-separated and within project folder): ")
     new_files = [build_processing.get_build(PurePath(__file__).parents[1], file) for file in file_names.split(",")]
     user_name = os.environ.get("FG_USER_NAME") or input("FantasyGrounds username: ")
@@ -50,6 +49,8 @@ def main() -> None:
     readme_text = ""
 
     with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s:
+        # item.login(s, urls)
+        # graph_users(item.get_sales(s, urls))
         channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
         item.upload_and_publish(s, urls, new_files, channel)
         if os.environ.get("FG_README_UPDATE", "TRUE") == "TRUE":
