@@ -19,7 +19,7 @@ def graph_users(sales: list[dict[str, (str | int | None)]]) -> None:
     sales_df["created_at"] = pd.to_datetime(sales_df["created_at"])
     sales_df.set_index("created_at", inplace=True)
 
-    sales_count = sales_df.resample("ME").size().cumsum()
+    sales_count = sales_df.resample("W").size().cumsum()
 
     plt.style.use("https://raw.githubusercontent.com/h4pZ/rose-pine-matplotlib/main/themes/rose-pine-moon.mplstyle")
 
