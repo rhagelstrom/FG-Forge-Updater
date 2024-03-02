@@ -12,7 +12,8 @@ uv venv
 ```
 
 ```shell
-source .venv/bin/activate
+source .venv/bin/activate # Linux or macOS
+.venv\Scripts\activate # Windows
 ```
 
 ```shell
