@@ -53,7 +53,7 @@ def main() -> None:
         channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
         item.upload_and_publish(s, urls, new_files, channel)
         if os.environ.get("FG_README_UPDATE", "TRUE") == "TRUE":
-            readme_text = build_processing.get_readme(new_files, False)
+            readme_text = build_processing.get_readme(new_files, os.environ.get("FG_README_NO_IMAGES", "FALSE") == "TRUE")
         if readme_text != "":
             item.update_description(s, urls, readme_text)
 

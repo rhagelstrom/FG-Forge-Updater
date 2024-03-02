@@ -57,6 +57,8 @@ FG_ITEM_ID=33
 FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
 # [OPTIONAL] set this to FALSE to prevent replacing the description with the contents of README.md
 FG_README_UPDATE=TRUE
+# [OPTIONAL] set this to TRUE to remove images instead of creating links
+FG_README_NO_IMAGES=FALSE
 # [OPTIONAL] set this to "TEST" or "NONE" if you would rather target those channels
 FG_RELEASE_CHANNEL=LIVE
 ```
