@@ -1,6 +1,17 @@
+import urllib.request
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
+from matplotlib import font_manager
+from matplotlib import rcParams
+
+# Downloading the font file
+urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/ofl/lexend/Lexend%5Bwght%5D.ttf?raw=true", "/tmp/lexend.ttf")
+if Path("/tmp/lexend.ttf").is_file():
+    font_manager.fontManager.addfont("/tmp/lexend.ttf")
+    rcParams["font.family"] = "Lexend"
 
 
 def graph_users(sales: list[dict[str, (str | int | None)]]) -> None:
