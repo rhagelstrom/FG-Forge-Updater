@@ -1,4 +1,5 @@
 """Automation to enable uploading a new fantasygrounds mod or ext file to the FG Forge and publishing it to the Live channel"""
+
 import getpass
 import logging
 import os
@@ -46,16 +47,16 @@ def main() -> None:
     """Hey, I just met you, and this is crazy, but I'm the main function, so call me maybe."""
     load_dotenv(Path(PurePath(__file__).parents[1], ".env"))
     new_files, item, urls = construct_objects()
-    readme_text = ""
 
     with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s:
-        # item.login(s, urls)
-        # graph_users(item.get_sales(s, urls))
-        channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
-        item.upload_and_publish(s, urls, new_files, channel)
+        if os.environ.get("FG_GRAPH_SALES", "TRUE") == "TRUE":
+            item.login(s, urls)
+            graph_users(item.get_sales(s, urls))
+        if os.environ.get("FG_UPLOAD_BUILD", "TRUE") == "TRUE":
+            channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
+            item.upload_and_publish(s, urls, new_files, channel)
         if os.environ.get("FG_README_UPDATE", "TRUE") == "TRUE":
             readme_text = build_processing.get_readme(new_files, os.environ.get("FG_README_NO_IMAGES", "FALSE") == "TRUE")
-        if readme_text != "":
             item.update_description(s, urls, readme_text)
 
 

@@ -61,6 +61,10 @@ FG_README_UPDATE=TRUE
 FG_README_NO_IMAGES=FALSE
 # [OPTIONAL] set this to "TEST" or "NONE" if you would rather target those channels
 FG_RELEASE_CHANNEL=LIVE
+# [OPTIONAL] set this to FALSE to skip build uploading
+FG_UPLOAD_BUILD=TRUE
+# [OPTIONAL] set this to TRUE to generate a "cumulative-sales.png" image
+FG_GRAPH_SALES=FALSE
 ```
 
 2. Put an ext file to upload into the project folder.
