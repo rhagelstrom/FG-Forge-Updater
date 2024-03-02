@@ -49,13 +49,13 @@ def main() -> None:
     new_files, item, urls = construct_objects()
 
     with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s:
-        if os.environ.get("FG_GRAPH_SALES", "TRUE") == "TRUE":
+        if os.environ.get("FG_GRAPH_SALES", "FALSE") == "TRUE":
             item.login(s, urls)
             graph_users(item.get_sales(s, urls))
         if os.environ.get("FG_UPLOAD_BUILD", "TRUE") == "TRUE":
             channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
             item.upload_and_publish(s, urls, new_files, channel)
-        if os.environ.get("FG_README_UPDATE", "TRUE") == "TRUE":
+        if os.environ.get("FG_README_UPDATE", "FALSE") == "TRUE":
             readme_text = build_processing.get_readme(new_files, os.environ.get("FG_README_NO_IMAGES", "FALSE") == "TRUE")
             item.update_description(s, urls, readme_text)
 

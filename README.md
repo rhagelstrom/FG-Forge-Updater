@@ -55,14 +55,17 @@ FG_USER_PASS=**********
 FG_ITEM_ID=33
 # the name of the ext file you want to upload (can be comma-separated list)
 FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
-# [OPTIONAL] set this to FALSE to prevent replacing the description with the contents of README.md
-FG_README_UPDATE=TRUE
-# [OPTIONAL] set this to TRUE to remove images instead of creating links
-FG_README_NO_IMAGES=FALSE
-# [OPTIONAL] set this to "TEST" or "NONE" if you would rather target those channels
-FG_RELEASE_CHANNEL=LIVE
+
 # [OPTIONAL] set this to FALSE to skip build uploading
 FG_UPLOAD_BUILD=TRUE
+# [OPTIONAL] set this to "TEST" or "NONE" if you would rather target those channels
+FG_RELEASE_CHANNEL=LIVE
+
+# [OPTIONAL] set this to TRUE to prevent replacing the description with the contents of README.md
+FG_README_UPDATE=FALSE
+# [OPTIONAL] set this to TRUE to remove images instead of creating links
+FG_README_NO_IMAGES=FALSE
+
 # [OPTIONAL] set this to TRUE to generate a "cumulative-sales.png" image
 FG_GRAPH_SALES=FALSE
 ```
