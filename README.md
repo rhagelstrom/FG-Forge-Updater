@@ -32,11 +32,12 @@ uv venv
 ```
 
 ```shell
-source .venv/bin/activate
+source .venv/bin/activate # Linux or macOS
+.venv\Scripts\activate # Windows
 ```
 
 ```shell
-uv pip install .
+uv pip install -e .
 ```
 
 ## Usage
@@ -54,7 +55,7 @@ FG_USER_PASS=**********
 # the item ID of the FG Forge item you want to modify
 FG_ITEM_ID=33
 # the name of the ext file you want to upload (can be comma-separated list)
-FG_UL_FILE=FG-PFRPG-Advanced-Effects.ext
+FG_UL_FILE=path/to/file.ext
 
 # [OPTIONAL] set this to FALSE to skip build uploading
 FG_UPLOAD_BUILD=TRUE
@@ -74,5 +75,5 @@ FG_GRAPH_SALES=FALSE
 3. Run the following command from inside the project folder:
 
 ```shell
-python src/main.py
+python -m src.main
 ```
