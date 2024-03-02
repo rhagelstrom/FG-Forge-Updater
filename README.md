@@ -54,7 +54,7 @@ FG_USER_NAME=**********
 FG_USER_PASS=**********
 # the item ID of the FG Forge item you want to modify
 FG_ITEM_ID=33
-# the name of the ext file you want to upload (can be comma-separated list)
+# the name(s) of the (supported -- ext, pak, mod, etc) file(s) you want to upload (can be comma-separated list)
 FG_UL_FILE=path/to/file.ext
 
 # [OPTIONAL] set this to FALSE to skip build uploading
