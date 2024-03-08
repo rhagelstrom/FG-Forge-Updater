@@ -18,7 +18,21 @@ from selenium.webdriver.support.ui import WebDriverWait
 from dropzone import DropzoneErrorHandling, add_file_to_dropzone
 
 
-class ReleaseChannel(Enum):
+class ForgeTransactionType(Enum):
+    """Constants representing the strings used to represent each type of transaction for a Forge item"""
+
+    TREASURE_CHEST: str = "1"
+    PURCHASE: str = "2"
+    # TODO: What is #3?
+    # TODO: What is #4?
+    GIFT: str = "5"
+    # TODO: What is #6?
+    OWNER: str = "7"
+    # TODO: What is #8?
+    DONOR: str = "9"
+
+
+class ForgeReleaseChannel(Enum):
     """Constants representing the strings used to represent each release channel in build-management comboboxes"""
 
     LIVE: str = "1"
@@ -107,7 +121,7 @@ class ForgeItem:
         except TimeoutException as e:
             raise TimeoutException(f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?") from e
 
-    def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: ReleaseChannel) -> None:
+    def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: ForgeReleaseChannel) -> None:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
         self.login(session, urls)
         logging.info("Uploading new build to Forge item")
@@ -115,7 +129,7 @@ class ForgeItem:
         self.open_item_page(session.driver)
         self.add_build(session.driver, new_files)
 
-        if channel is ReleaseChannel.NONE:
+        if channel is ForgeReleaseChannel.NONE:
             logging.info("Target channel is set to none, not setting new build to a release channel.")
             return
         latest_build_id = max(self.get_item_builds(session, urls), key=lambda build: int(build["build_num"]))["id"]
@@ -141,10 +155,13 @@ class ForgeItem:
         response = session.post(urls.API_SALES, data=f"draw=1&length={limit_count}", headers=headers)
         sales = response.json()["data"]
 
-        def is_item_sale(sale):
-            return sale["item_id"] == self.item_id and sale["transaction_type_id"] == "2"
+        def is_sale_type(sale, sale_type: ForgeTransactionType):
+            return sale["item_id"] == self.item_id and sale["transaction_type_id"] == sale_type
 
-        return [sale for sale in sales if is_item_sale(sale)]
+        sales = [sale for sale in sales if is_sale_type(sale, ForgeTransactionType.PURCHASE)]
+        logging.info("Found %s transactions with transaction type %s for Forge item %s", len(sales), ForgeTransactionType.PURCHASE, self.item_id)
+
+        return sales
 
     def get_item_builds(self, session: requestium.Session, urls: ForgeURLs) -> dict:
         """Retrieve a list of builds for this Forge item, with ID, build number, upload date, and current channel"""
@@ -153,7 +170,7 @@ class ForgeItem:
         )
         return response.json()["data"]
 
-    def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_id: str, channel: ReleaseChannel) -> bool:
+    def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_id: str, channel: ForgeReleaseChannel) -> bool:
         """Sets the build channel of this Forge item to the specified value, returning True on 200 OK"""
         response = session.post(
             f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_id}/channels/{channel.value}",

@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from selenium import webdriver
 
 import build_processing
-from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ReleaseChannel
+from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ForgeReleaseChannel
 from users_graph import graph_users
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
@@ -53,7 +53,7 @@ def main() -> None:
             item.login(s, urls)
             graph_users(item.get_sales(s, urls))
         if os.environ.get("FG_UPLOAD_BUILD", "TRUE") == "TRUE":
-            channel = ReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
+            channel = ForgeReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
             item.upload_and_publish(s, urls, new_files, channel)
         if os.environ.get("FG_README_UPDATE", "FALSE") == "TRUE":
             readme_text = build_processing.get_readme(new_files, os.environ.get("FG_README_NO_IMAGES", "FALSE") == "TRUE")
