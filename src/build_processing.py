@@ -37,10 +37,10 @@ def readme_html(readme: ZipFile, no_images: bool = False) -> str:
     markdown_text = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
     markdown_text = mdformat.text(markdown_text)
     html = markdown(markdown_text, extensions=["extra", "nl2br", "smarty"])
-    html = BeautifulSoup(html, "html.parser")
-    html = replace_images_with_link(html, no_images)
-    html = apply_styles_to_table(html)
-    return str(html)
+    soup = BeautifulSoup(html, "html.parser")
+    soup = replace_images_with_link(soup, no_images)
+    soup = apply_styles_to_table(soup)
+    return str(soup)
 
 
 def get_readme(new_files: list[Path], no_images: bool = False) -> str:

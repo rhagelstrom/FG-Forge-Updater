@@ -8,6 +8,7 @@ from pathlib import Path
 
 import requestium
 from bs4 import BeautifulSoup
+from bs4.element import NavigableString
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -63,7 +64,10 @@ class ForgeCredentials:
             urls.MANAGE_CRAFT,
         )
         soup = BeautifulSoup(response.content, "html.parser")
-        return str(soup.find(attrs={"name": "csrf-token"}).get("content"))
+        token_element = soup.find(attrs={"name": "csrf-token"})
+        if not token_element or isinstance(token_element, NavigableString):
+            return str(token_element)
+        return str(token_element.get("content"))
 
 
 @dataclass(frozen=True)
@@ -138,7 +142,8 @@ class ForgeItem:
 
     def add_build(self, driver: WebDriver, new_builds: list[Path]) -> None:
         """Uploads new build(s) to this Forge item via dropzone web element."""
-        [add_file_to_dropzone(driver, self.timeout, build) for build in new_builds]
+        for build in new_builds:
+            add_file_to_dropzone(driver, self.timeout, build)
 
         submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button.click()
