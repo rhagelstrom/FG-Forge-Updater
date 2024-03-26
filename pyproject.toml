@@ -29,7 +29,8 @@ dev = [
     "pytest==8.1.1",
     "ruff==0.3.4",
     "types-beautifulsoup4==4.12.0.20240229",
-    "types-Markdown==3.6.0.20240316"
+    "types-Markdown==3.6.0.20240316",
+    "types-seaborn==0.13.2.20240311"
 ]
 github-actions = [
     "pytest-cov==5.0.0",
