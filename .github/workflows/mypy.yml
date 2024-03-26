@@ -64,4 +64,4 @@ jobs:
 
       - name: Lint the code with mypy
         run: |
-          mypy $(git ls-files '*.py')
+          mypy src/
