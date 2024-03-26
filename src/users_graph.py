@@ -25,7 +25,7 @@ def graph_users(sales: list[dict[str, (str | int | None)]]) -> None:
     plt.style.use("https://raw.githubusercontent.com/h4pZ/rose-pine-matplotlib/main/themes/rose-pine-moon.mplstyle")
 
     plt.figure(figsize=(25, 7))
-    sns.lineplot(data=pd.DataFrame(sales_count), linewidth=2.5, color="pink")
+    sns.lineplot(data=pd.DataFrame(sales_count), linewidth=2.5, color="pink", legend=False)
 
     plt.title("Cumulative Users", fontsize=26, pad=20)
     plt.xlabel("Date", fontsize=20, labelpad=20)
@@ -36,4 +36,4 @@ def graph_users(sales: list[dict[str, (str | int | None)]]) -> None:
 
     sns.despine(left=True)
 
-    plt.savefig("cumulative_users.png", dpi=300, bbox_inches="tight", transparent=True)
+    plt.savefig("../cumulative_users.png", dpi=300, bbox_inches="tight", transparent=True)
