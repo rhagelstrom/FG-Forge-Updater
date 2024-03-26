@@ -36,4 +36,4 @@ def graph_users(sales: list[dict[str, (str | int | None)]]) -> None:
 
     sns.despine(left=True)
 
-    plt.savefig("../cumulative_users.png", dpi=300, bbox_inches="tight", transparent=True)
+    plt.savefig("cumulative_users.png", dpi=300, bbox_inches="tight", transparent=True)
