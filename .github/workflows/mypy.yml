@@ -43,24 +43,11 @@ jobs:
       - name: Install uv and create venv
         run: |
           pip install -U pip uv
-          uv venv
-
-      - name: Enable macOS/Linux venv
-        if: runner.os != 'Windows'
-        run: |
-          source .venv/bin/activate
-          echo $PATH >> $GITHUB_PATH
-
-      - name: Enable Windows venv
-        if: runner.os == 'Windows'
-        run: |
-          .venv\Scripts\activate
-          echo $env:path >> $ENV:GITHUB_PATH
 
       - name: Install dependencies
         run: |
-          uv pip install -e .[dev]
-          uv pip install -e .[github-actions]
+          uv pip install --system -e .[dev]
+          uv pip install --system -e .[github-actions]
 
       - name: Lint the code with mypy
         run: |
