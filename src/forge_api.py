@@ -161,7 +161,7 @@ class ForgeItem:
         sales = response.json()["data"]
 
         def is_sale_type(sale, sale_type: ForgeTransactionType):
-            return sale["item_id"] == self.item_id and sale["transaction_type_id"] == sale_type
+            return sale["item_id"] == self.item_id and sale["transaction_type_id"] == sale_type.value
 
         sales = [sale for sale in sales if is_sale_type(sale, ForgeTransactionType.PURCHASE)]
         logging.info("Found %s transactions with transaction type %s for Forge item %s", len(sales), ForgeTransactionType.PURCHASE, self.item_id)
