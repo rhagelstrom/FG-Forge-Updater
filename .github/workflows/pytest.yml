@@ -60,4 +60,4 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest --cov-report= --cov=src tests/
+          pytest --cov-report term-missing --cov=src tests/
