@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  ruff:
+  mypy:
     strategy:
       fail-fast: false
       matrix:
