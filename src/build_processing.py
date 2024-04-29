@@ -25,7 +25,8 @@ def apply_styles_to_table(soup: BeautifulSoup) -> BeautifulSoup:
 def replace_images_with_link(soup: BeautifulSoup, no_images: bool) -> BeautifulSoup:
     """Replace all images with boilerplate text"""
     for img in soup.find_all("img"):
-        new_tag = soup.new_tag("a", href=img["src"])
+        link_url = img.parent.get("href") if img.parent.get("href") else img.get("src")
+        new_tag = soup.new_tag("a", href=link_url)
         new_tag.string = "" if no_images else img.get("alt", "[IMG]")
         img.replace_with(new_tag)
     return soup
