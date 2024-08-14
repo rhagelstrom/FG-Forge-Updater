@@ -45,6 +45,7 @@ class ForgeReleaseChannel(Enum):
 class ForgeURLs:
     """Contains URL strings for webpages used on the forge"""
 
+    FORGE_LOGIN: str = "https://forge.fantasygrounds.com/login"
     MANAGE_CRAFT: str = "https://forge.fantasygrounds.com/crafter/manage-craft"
     API_BASE: str = "https://forge.fantasygrounds.com/api"
     API_CRAFTER_ITEMS: str = f"{API_BASE}/crafter/items"
@@ -80,7 +81,7 @@ class ForgeItem:
 
     def login(self, session: requestium.Session, urls: ForgeURLs) -> None:
         """Open manage-craft and login if prompted"""
-        session.driver.get(urls.MANAGE_CRAFT)
+        session.driver.get(urls.FORGE_LOGIN)
 
         try:
             username_field = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "vb_login_username")))
