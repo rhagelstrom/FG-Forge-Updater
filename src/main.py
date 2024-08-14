@@ -49,8 +49,8 @@ def main() -> None:
     new_files, item, urls = construct_objects()
 
     with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s:
+        item.login(s, urls)
         if os.environ.get("FG_GRAPH_SALES", "FALSE") == "TRUE":
-            item.login(s, urls)
             graph_users(item.get_sales(s, urls))
         if os.environ.get("FG_UPLOAD_BUILD", "TRUE") == "TRUE":
             channel = ForgeReleaseChannel[os.environ.get("FG_RELEASE_CHANNEL", "LIVE").upper()]
