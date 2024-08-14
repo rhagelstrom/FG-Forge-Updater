@@ -89,7 +89,7 @@ class ForgeItem:
             time.sleep(0.25)
             username_field.send_keys(self.creds.username)
             password_field.send_keys(self.creds.password)
-            login_button = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.CLASS_NAME, "registerbtn")))
+            login_button = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@class='registerbtn']")))
             login_button.click()
             time.sleep(0.25)
 

@@ -12,7 +12,7 @@ from ..test_forge_credentials import ForgeCredentialsFactory
 TEST_CALLS = [
     (By.NAME, "vb_login_username"),
     (By.NAME, "vb_login_password"),
-    (By.CLASS_NAME, "registerbtn"),
+    (By.XPATH, "//a[@class='registerbtn']"),
 ]
 
 
