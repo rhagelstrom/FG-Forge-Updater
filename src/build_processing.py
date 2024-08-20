@@ -13,12 +13,12 @@ README = "README.md"
 
 def apply_styles_to_table(soup: BeautifulSoup) -> BeautifulSoup:
     """Style tables for better legibility"""
-    colors = itertools.cycle(["#FFFFFF", "#E6E6E6"])
+    colors = itertools.cycle(["#000000", "#1C1C1E"])
     for html_table in soup.find_all("table"):
         for col in html_table.find_all("td"):
-            col["style"] = "border:1px solid #000; padding:0.5em;"
+            col["style"] = "border:1px solid #FFFFFF; padding:0.5em;"
         for row in html_table.find_all("tr"):
-            row["style"] = f"background-color: {next(colors)}; border:1px solid #000;"
+            row["style"] = f"background-color: {next(colors)}; border:1px solid #FFFFFF;"
     return soup
 
 
