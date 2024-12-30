@@ -7,7 +7,7 @@
 
 Uploads new builds to FantasyGrounds Forge and updates item page descriptions without requiring user input.
 It is intended for use in CI release workflows such as one I
-use [here](https://github.com/bmos/fg-workflows/blob/main/create-release.yml).
+use [here](https://github.com/FG-Unofficial-Developers-Guild/FG-CoreRPG-Extraplanar-Containers/blob/main/.github/workflows/release.yml).
 
 > [!WARNING]
 > At the moment, this will only work for the first page of 100 items found on a Forge account.
