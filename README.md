@@ -1,7 +1,5 @@
-[![CodeQL](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql)
-[![Pytest](https://github.com/bmos/FG-Forge-Updater/actions/workflows/pytest.yml/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/pytest.yml)
-[![Mypy](https://github.com/bmos/FG-Forge-Updater/actions/workflows/mypy.yml/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/mypy.yml)
-[![Ruff](https://github.com/bmos/FG-Forge-Updater/actions/workflows/ruff.yml/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/ruff.yml)
+[![CodeQL](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql)
+[![Python checks](https://github.com/bmos/FG-Forge-Updater/actions/workflows/python.yml/badge.svg?branch=main)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/python.yml)
 
 # Forge Updater
 
