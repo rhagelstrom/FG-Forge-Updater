@@ -33,6 +33,7 @@ jobs:
               uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
               with:
                   python-version: ${{ matrix.python-version }}
+                  cache: pip
 
             - name: Install uv
               uses: install-pinned/uv@fcfffa0c3562cd3e841565020ad09a70bb82299b  # 0.5.14
@@ -56,6 +57,7 @@ jobs:
               uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
               with:
                   python-version: "3.13"
+                  cache: pip
 
             - name: Install uv
               uses: install-pinned/uv@fcfffa0c3562cd3e841565020ad09a70bb82299b  # 0.5.14
@@ -79,6 +81,7 @@ jobs:
               uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
               with:
                   python-version: "3.13"
+                  cache: pip
 
             - name: Install uv
               uses: install-pinned/uv@fcfffa0c3562cd3e841565020ad09a70bb82299b  # 0.5.14
@@ -102,6 +105,7 @@ jobs:
               uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
               with:
                   python-version: "3.13"
+                  cache: pip
 
             - name: Install uv
               uses: install-pinned/uv@fcfffa0c3562cd3e841565020ad09a70bb82299b  # 0.5.14
@@ -125,6 +129,7 @@ jobs:
               uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
               with:
                   python-version: "3.13"
+                  cache: pip
 
             - name: Install uv
               uses: install-pinned/uv@fcfffa0c3562cd3e841565020ad09a70bb82299b  # 0.5.14
@@ -148,6 +153,7 @@ jobs:
               uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
               with:
                   python-version: "3.13"
+                  cache: pip
 
             - name: Install uv
               uses: install-pinned/uv@fcfffa0c3562cd3e841565020ad09a70bb82299b  # 0.5.14
