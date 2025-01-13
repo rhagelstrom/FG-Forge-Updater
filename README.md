@@ -1,7 +1,5 @@
-[![CodeQL](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql)
-[![Pytest](https://github.com/bmos/FG-Forge-Updater/actions/workflows/pytest.yml/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/pytest.yml)
-[![Mypy](https://github.com/bmos/FG-Forge-Updater/actions/workflows/mypy.yml/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/mypy.yml)
-[![Ruff](https://github.com/bmos/FG-Forge-Updater/actions/workflows/ruff.yml/badge.svg)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/ruff.yml)
+[![CodeQL](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql/badge.svg?branch=main)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/github-code-scanning/codeql)
+[![Python checks](https://github.com/bmos/FG-Forge-Updater/actions/workflows/python.yml/badge.svg?branch=main)](https://github.com/bmos/FG-Forge-Updater/actions/workflows/python.yml)
 
 # Forge Updater
 
@@ -23,7 +21,7 @@ use [here](https://github.com/FG-Unofficial-Developers-Guild/FG-CoreRPG-Extrapla
 
 ## Getting Started / Before Using
 
-To run this code, you'll need to have Python 3.10, 3.11, or 3.12 installed on your machine. You'll also need to
+To run this code, you'll need to have Python 3.10, 3.11, 3.12, or 3.13 installed on your machine. You'll also need to
 install the required packages by running the following commands from inside the project folder:
 
 ```shell
