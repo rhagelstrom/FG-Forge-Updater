@@ -9,9 +9,9 @@ import requestium
 from dotenv import load_dotenv
 from selenium import webdriver
 
-import build_processing
-from forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ForgeReleaseChannel
-from users_graph import graph_users
+import src.build_processing as build_processing
+from src.forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ForgeReleaseChannel
+from src.users_graph import graph_users
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")
 

@@ -159,4 +159,4 @@ jobs:
 
             - name: Lint the code with mypy
               run: |
-                mypy src/
+                mypy .
