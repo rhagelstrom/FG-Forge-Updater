@@ -16,7 +16,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-from dropzone import DropzoneErrorHandling, add_file_to_dropzone
+from src.dropzone import DropzoneErrorHandling, add_file_to_dropzone
 
 
 class ForgeTransactionType(Enum):

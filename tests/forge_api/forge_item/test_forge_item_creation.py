@@ -18,4 +18,4 @@ def test_forge_item_creation() -> None:
     assert item.item_id == item_string
     assert item.timeout == timeout_string
     with pytest.raises(FrozenInstanceError):
-        item.item_id = "7"
+        item.item_id = "7"  # type: ignore[misc]

@@ -11,4 +11,4 @@ def test_forge_urls() -> None:
     assert urls.MANAGE_CRAFT == "https://forge.fantasygrounds.com/crafter/manage-craft"
     assert urls.API_CRAFTER_ITEMS == "https://forge.fantasygrounds.com/api/crafter/items"
     with pytest.raises(FrozenInstanceError):
-        urls.MANAGE_CRAFT = "https://www.ellingson-mineral.com/"
+        urls.MANAGE_CRAFT = "https://www.ellingson-mineral.com/"  # type: ignore[misc]

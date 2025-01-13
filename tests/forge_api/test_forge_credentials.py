@@ -22,4 +22,4 @@ def test_forge_credentials_creation() -> None:
     assert creds.username == user_string
     assert creds.password == user_pass
     with pytest.raises(FrozenInstanceError):
-        creds.password = "god"
+        creds.password = "god"  # type: ignore[misc]

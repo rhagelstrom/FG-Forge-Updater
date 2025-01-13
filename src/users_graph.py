@@ -1,14 +1,17 @@
 import tempfile
-import urllib.request
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import requests
 import seaborn as sns
 from matplotlib import font_manager
 from matplotlib import rcParams
 
-with tempfile.NamedTemporaryFile() as tmp_font:
-    urllib.request.urlretrieve("https://github.com/google/fonts/raw/main/ofl/lexend/Lexend%5Bwght%5D.ttf?raw=true", tmp_font.name)  # nosec B310
+FONT_URL = "https://github.com/google/fonts/raw/main/ofl/lexend/Lexend%5Bwght%5D.ttf?raw=true"
+
+
+with tempfile.NamedTemporaryFile(delete=False, suffix=".ttf") as tmp_font:
+    tmp_font.write(requests.get(FONT_URL).content)
     font_manager.fontManager.addfont(tmp_font.name)
     rcParams["font.family"] = "Lexend"
 
