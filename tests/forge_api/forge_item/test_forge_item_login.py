@@ -1,3 +1,5 @@
+import os
+import sys
 from typing import Optional
 from unittest.mock import MagicMock, call
 
@@ -63,4 +65,6 @@ def test_forge_item_login() -> None:
     expected_find_element.append(call(By.XPATH, "//div[@class='blockrow restore']"))  # login failure message
     expected_find_element.append(call(By.XPATH, "//div[@class='blockrow restore']"))  # login failure message
     expected_find_element.append(call(By.XPATH, "//div[@class='blockrow restore']"))  # login failure message
+    if os.name == "nt" and not sys.version_info.minor >= 13:
+        expected_find_element.append(call(By.XPATH, "//div[@class='blockrow restore']"))  # login failure message
     assert mock_session.driver.find_element.mock_calls == expected_find_element
