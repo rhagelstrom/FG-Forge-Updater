@@ -95,7 +95,8 @@ class ForgeItem:
 
             try:
                 WebDriverWait(session.driver, self.timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@class='blockrow restore']")))
-                raise Exception(f"Attempted login as {self.creds.username} was unsuccessful")
+                error_msg = f"Attempted login as {self.creds.username} was unsuccessful"
+                raise Exception(error_msg)
             except TimeoutException:
                 logging.info("Logged in as %s", self.creds.username)
                 session.transfer_driver_cookies_to_session(copy_user_agent=True)
@@ -106,7 +107,8 @@ class ForgeItem:
                 WebDriverWait(session.driver, self.timeout).until(EC.presence_of_element_located((By.NAME, "items-table_length")))
                 logging.info("Already logged in")
             except TimeoutException as e:
-                raise TimeoutException("No username or password field found, or login button is not clickable.") from e
+                error_msg = "No username or password field found, or login button is not clickable."
+                raise TimeoutException(error_msg) from e
 
     def open_items_list(self, driver: WebDriver, urls: ForgeURLs) -> None:
         """Open the manage craft page, raising an exception if the item table size selector isn't found."""
@@ -116,7 +118,8 @@ class ForgeItem:
             items_per_page = Select(WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "items-table_length"))))
             items_per_page.select_by_visible_text("100")
         except TimeoutException as e:
-            raise TimeoutException("Could not load the Manage Craft page!") from e
+            error_msg = "Could not load the Manage Craft page!"
+            raise TimeoutException(error_msg) from e
 
     def open_item_page(self, driver: WebDriver) -> None:
         """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
@@ -124,7 +127,8 @@ class ForgeItem:
             item_link = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link.click()
         except TimeoutException as e:
-            raise TimeoutException(f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?") from e
+            error_msg = f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?"
+            raise TimeoutException(error_msg) from e
 
     def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: ForgeReleaseChannel) -> None:
         """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""

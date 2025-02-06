@@ -9,7 +9,7 @@ from ..test_forge_credentials import ForgeCredentialsFactory
 def test_forge_item_creation() -> None:
     """Ensures that provided item id and timeout limit are found in the ForgeItems object and that attempts at modifying values are not allowed"""
     item_string = "33"
-    timeout_string = float(3.14159)
+    timeout_string = 3.14159
 
     creds = ForgeCredentialsFactory.build()
     item = ForgeItem(creds, item_string, timeout_string)

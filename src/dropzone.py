@@ -59,7 +59,8 @@ class DropzoneErrorHandling:
             upload_progress_bar_width_filled = self.driver.find_element(By.CLASS_NAME, "dz-upload").value_of_css_property("width").replace("px", "")
             upload_progress_bar_width = self.driver.find_element(By.CLASS_NAME, "dz-progress").value_of_css_property("width").replace("px", "")
             upload_progress = float(upload_progress_bar_width_filled) / float(upload_progress_bar_width)
-            raise LongUploadException(f"File upload timed out at {upload_progress:.0f}%")
+            error_msg = f"File upload timed out at {upload_progress:.0f}%"
+            raise LongUploadException(error_msg)
         except NoSuchElementException:
             logging.info("No file progress bars found")
 
@@ -79,4 +80,5 @@ def add_file_to_dropzone(driver: WebDriver, timeout: float, upload_file: Path) -
         WebDriverWait(driver, timeout).until(EC.presence_of_element_located((By.CLASS_NAME, "dz-upload")))
         logging.info("File queued in dropzone")
     except TimeoutException as e:
-        raise TimeoutException("File drag and drop didn't work!") from e
+        error_msg = "File drag and drop didn't work!"
+        raise TimeoutException(error_msg) from e

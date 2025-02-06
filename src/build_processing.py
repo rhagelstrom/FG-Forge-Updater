@@ -33,7 +33,7 @@ def replace_images_with_link(soup: BeautifulSoup, no_images: bool) -> BeautifulS
 
 
 def readme_html(readme: ZipFile, no_images: bool = False) -> str:
-    """returns an html-formatted string"""
+    """Returns an html-formatted string"""
     markdown_text = readme.read(README).decode("UTF-8")
     markdown_text = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
     markdown_text = mdformat.text(markdown_text)
@@ -54,5 +54,6 @@ def get_build(file_path: PurePath, env_file: str) -> Path:
     new_file = Path(file_path, env_file)
     logging.info("File upload path determined to be: %s", new_file)
     if not new_file.is_file():
-        raise FileNotFoundError(f"File at {str(new_file)} is not found.")
+        error_msg = f"File at {new_file!s} is not found."
+        raise FileNotFoundError(error_msg)
     return new_file
