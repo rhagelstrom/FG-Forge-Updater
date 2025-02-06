@@ -22,32 +22,45 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "bandit==1.8.2",
-    "mypy==1.14.1",
+    "bandit[toml]==1.8.2",
+    "mypy==1.15.0",
     "pandas-stubs==2.2.3.241126",
     "polyfactory==2.18.1",
-    "pre-commit==4.0.1",
+    "pre-commit==4.1.0",
     "pytest==8.3.4",
-    "ruff==0.9.1",
+    "ruff==0.9.4",
     "types-beautifulsoup4==4.12.0.20241020",
     "types-Markdown==3.7.0.20241204",
     "types-requests==2.32.0.20241016",
     "types-seaborn==0.13.2.20250111"
 ]
 github-actions = [
-    "pytest-cov==6.0.0",
+    "coverage==7.6.1",
 ]
 
 [tool.ruff]
 line-length = 160
+target-version = "py311"
+include = [
+    "src/**/*.py",
+    "tests/**/*.py",
+]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F"]
-extend-select = ["B", "W", "C"]
-ignore = ["C400", "C401"]
+select = ["F", "E", "W", "D", "YTT", "LOG", "A", "C4", "DTZ", "EM", "G", "T20", "BLE", "PT", "SIM", "RUF", "UP"]
+ignore = ["E501", "D415", "D404", "D401", "D400", "D212", "D205", "D203", "D200", "D1"]
 
 [[tool.mypy.overrides]]
 module = [
     "requestium"
 ]
 ignore_missing_imports = true
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+
+[tool.coverage.paths]
+source = [
+    "src/",
+    ]
