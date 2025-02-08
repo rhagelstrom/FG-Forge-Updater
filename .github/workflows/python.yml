@@ -2,7 +2,17 @@ name: Python checks
 
 on:
     push:
+        paths:
+          - '**.py'
+          - 'pyproject.toml'
+          - '.github/workflows/python.yml'
     pull_request:
+        paths:
+          - '**.py'
+          - 'pyproject.toml'
+          - '.github/workflows/python.yml'
+    schedule:
+        - cron:  '0 9 * * 1'
     workflow_dispatch:
 
 permissions:
