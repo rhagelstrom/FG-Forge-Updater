@@ -2,13 +2,15 @@ import os
 import sys
 from unittest.mock import MagicMock, call
 
+import pytest
 import requestium
 from requests.structures import CaseInsensitiveDict
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.forge_api import ForgeItem, ForgeURLs
+from src.forge_api import ForgeItem, ForgeURLs, ForgeLoginException
+from src.main import configure_headless_chrome
 from ..test_forge_credentials import ForgeCredentialsFactory
 
 TEST_CALLS = [
@@ -79,3 +81,10 @@ def test_forge_item_login() -> None:
     if os.name == "nt" and not sys.version_info >= (3, 13):
         expected_find_element.append(call(By.XPATH, "//div[@class='blockrow restore']"))  # login failure message
     assert mock_session.driver.find_element.mock_calls == expected_find_element
+
+
+def test_forge_item_login_unsuccessful() -> None:
+    creds = ForgeCredentialsFactory.build()
+    item = ForgeItem(creds, "1337", 1)
+    with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s, pytest.raises(ForgeLoginException):
+        item.login(s, ForgeURLs())
