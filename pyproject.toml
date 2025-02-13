@@ -94,3 +94,8 @@ source = [
 omit = [
     "tests",
 ]
+
+[tool.coverage.report]
+exclude_also = [
+    "logging.info",
+]
