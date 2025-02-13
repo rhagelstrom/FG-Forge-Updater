@@ -19,6 +19,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from src.dropzone import add_file_to_dropzone, check_report_toast_error, check_report_dropzone_upload_error, check_report_upload_percentage
 
 
+class ForgeLoginException(BaseException):
+    """Exception to be raised when forge login is unsuccessful."""
+
+    pass
+
+
 class ForgeTransactionType(Enum):
     """Constants representing the strings used to represent each type of transaction for a Forge item."""
 
@@ -97,7 +103,7 @@ class ForgeItem:
             try:
                 WebDriverWait(session.driver, self.timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@class='blockrow restore']")))
                 error_msg = f"Attempted login as {self.creds.username} was unsuccessful"
-                raise Exception(error_msg)
+                raise ForgeLoginException(error_msg)
             except TimeoutException:
                 logging.info("Logged in as %s", self.creds.username)
                 session.transfer_driver_cookies_to_session(copy_user_agent=True)
