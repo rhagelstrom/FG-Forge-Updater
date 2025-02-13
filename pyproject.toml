@@ -59,6 +59,7 @@ ignore_missing_imports = true
 [tool.coverage.run]
 branch = true
 relative_files = true
+command_line = "-m pytest"
 
 [tool.coverage.paths]
 source = [
