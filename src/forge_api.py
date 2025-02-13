@@ -1,4 +1,4 @@
-"""Provides classes for authenticating to and managing items on the FantasyGrounds Forge marketplace"""
+"""Provides classes for authenticating to and managing items on the FantasyGrounds Forge marketplace."""
 
 import logging
 import time
@@ -20,7 +20,7 @@ from src.dropzone import DropzoneErrorHandling, add_file_to_dropzone
 
 
 class ForgeTransactionType(Enum):
-    """Constants representing the strings used to represent each type of transaction for a Forge item"""
+    """Constants representing the strings used to represent each type of transaction for a Forge item."""
 
     TREASURE_CHEST = "1"
     PURCHASE = "2"
@@ -34,7 +34,7 @@ class ForgeTransactionType(Enum):
 
 
 class ForgeReleaseChannel(Enum):
-    """Constants representing the strings used to represent each release channel in build-management comboboxes"""
+    """Constants representing the strings used to represent each release channel in build-management comboboxes."""
 
     LIVE = "1"
     TEST = "2"
@@ -43,7 +43,7 @@ class ForgeReleaseChannel(Enum):
 
 @dataclass(frozen=True, init=False)
 class ForgeURLs:
-    """Contains URL strings for webpages used on the forge"""
+    """Contains URL strings for webpages used on the forge."""
 
     FORGE_LOGIN: str = "https://forge.fantasygrounds.com/login"
     MANAGE_CRAFT: str = "https://forge.fantasygrounds.com/crafter/manage-craft"
@@ -54,7 +54,7 @@ class ForgeURLs:
 
 @dataclass(frozen=True)
 class ForgeCredentials:
-    """Dataclass used to store the authentication credentials used on FG Forge"""
+    """Dataclass used to store the authentication credentials used on FG Forge."""
 
     username: str
     password: str
@@ -74,14 +74,14 @@ class ForgeCredentials:
 
 @dataclass(frozen=True)
 class ForgeItem:
-    """Dataclass used to interact with an item on the FG Forge"""
+    """Dataclass used to interact with an item on the FG Forge."""
 
     creds: ForgeCredentials
     item_id: str
     timeout: float
 
     def login(self, session: requestium.Session, urls: ForgeURLs) -> None:
-        """Open manage-craft and login if prompted"""
+        """Open manage-craft and login if prompted."""
         session.driver.get(urls.FORGE_LOGIN)
 
         try:
@@ -132,7 +132,7 @@ class ForgeItem:
             raise TimeoutException(error_msg) from e
 
     def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: ForgeReleaseChannel) -> None:
-        """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge"""
+        """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge."""
         self.login(session, urls)
         logging.info("Uploading new build to Forge item")
         self.open_items_list(session.driver, urls)
@@ -175,21 +175,21 @@ class ForgeItem:
         return sales
 
     def get_item_builds(self, session: requestium.Session, urls: ForgeURLs) -> dict:
-        """Retrieve a list of builds for this Forge item, with ID, build number, upload date, and current channel"""
+        """Retrieve a list of builds for this Forge item, with ID, build number, upload date, and current channel."""
         response = session.post(
             f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/data-table",
         )
         return response.json()["data"]
 
     def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_id: str, channel: ForgeReleaseChannel) -> bool:
-        """Sets the build channel of this Forge item to the specified value, returning True on 200 OK"""
+        """Sets the build channel of this Forge item to the specified value, returning True on 200 OK."""
         response = session.post(
             f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_id}/channels/{channel.value}",
         )
         return response.status_code == 200
 
     def replace_description(self, driver: WebDriver, description_text: str) -> None:
-        """Replaces the existing item description with a new HTML-formatted full description"""
+        """Replaces the existing item description with a new HTML-formatted full description."""
         driver.execute_script("window.scrollTo(0, document.body.scrollTop);")
         uploads_tab = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-item-tab']")))
         uploads_tab.click()
@@ -207,7 +207,7 @@ class ForgeItem:
         logging.info("Forge item description uploaded")
 
     def update_description(self, session: requestium.Session, urls: ForgeURLs, description: str) -> None:
-        """Coordinates sequential use of other class methods to update the item description for an item on the FG Forge"""
+        """Coordinates sequential use of other class methods to update the item description for an item on the FG Forge."""
         self.login(session, urls)
         logging.info("Updating Forge item description")
         self.open_items_list(session.driver, urls)

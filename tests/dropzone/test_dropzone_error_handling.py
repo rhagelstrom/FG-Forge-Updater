@@ -9,18 +9,18 @@ from src.dropzone import DropzoneErrorHandling, DropzoneException, LongUploadExc
 
 
 def mock_element() -> MagicMock:
-    """Construct a mock WebElement"""
+    """Construct a mock WebElement."""
     element = MagicMock(spec=WebElement)
     element.find_elements.return_value = [mock_element, mock_element]
     return element
 
 
 def test_check_report_toast_error() -> None:
-    """Ensure that toast errors raise an exception containing the error text"""
+    """Ensure that toast errors raise an exception containing the error text."""
     error_text = "Never send a boy to do a woman's job."
 
     def find_element(by, value) -> MagicMock | None:
-        """Returns a mock WebElement for a toast error where all child elements have a return value containing the error text"""
+        """Returns a mock WebElement for a toast error where all child elements have a return value containing the error text."""
         if by == By.XPATH and value == "//*[@class='toast toast-error']":
             element = mock_element()
             element.find_element.return_value.text = error_text
@@ -38,7 +38,7 @@ def test_check_report_dropzone_upload_error() -> None:
     error_text = "We have no names, man. No names. We are nameless!"
 
     def find_element(by, value) -> MagicMock | None:
-        """Returns a mock WebElement for a dropzone tooltip error or error message based on the (by, value) pairs"""
+        """Returns a mock WebElement for a dropzone tooltip error or error message based on the (by, value) pairs."""
         if by == By.CLASS_NAME and value == "dz-error-message":
             element = mock_element()
             element.value_of_css_property.return_value = "block"
@@ -61,7 +61,7 @@ def test_check_report_upload_percentage() -> None:
     error_text = r"File upload timed out at \d+%"
 
     def find_element(by, value) -> MagicMock | None:
-        """Returns a mock WebElement with all css properties returning sizes in pixels depending on the (by, value) pairs"""
+        """Returns a mock WebElement with all css properties returning sizes in pixels depending on the (by, value) pairs."""
         if by == By.CLASS_NAME and value == "dz-upload":
             element = mock_element()
             element.value_of_css_property.return_value = "55px"

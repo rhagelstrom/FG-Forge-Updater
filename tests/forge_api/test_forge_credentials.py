@@ -7,13 +7,13 @@ from src.forge_api import ForgeCredentials
 
 
 class ForgeCredentialsFactory(DataclassFactory[ForgeCredentials]):
-    """Represents a ForgeCredentials object for the purposes of testing ForgeItem objects"""
+    """Represents a ForgeCredentials object for the purposes of testing ForgeItem objects."""
 
     __model__ = ForgeCredentials
 
 
 def test_forge_credentials_creation() -> None:
-    """Ensures that provided username and password are found in the ForgeCredentials object and that attempts at modifying values are not allowed"""
+    """Ensures that provided username and password are found in the ForgeCredentials object and that attempts at modifying values are not allowed."""
     user_string = "eugene"
     user_pass = "i_Love md5!"
 

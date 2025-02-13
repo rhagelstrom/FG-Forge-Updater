@@ -17,7 +17,7 @@ TEST_ELEMENTS = [
 
 
 def mock_element() -> MagicMock:
-    """Construct a mock WebElement"""
+    """Construct a mock WebElement."""
     element = MagicMock(spec=WebElement)
     element.click.return_value = None
     element.is_displayed.return_value = True
@@ -27,20 +27,20 @@ def mock_element() -> MagicMock:
 
 
 def find_element(by: str, value: str) -> MagicMock | None:
-    """Return a mock_element if the (by, value) pair isn't found in TEST_ELEMENTS"""
+    """Return a mock_element if the (by, value) pair isn't found in TEST_ELEMENTS."""
     if (by, value) in TEST_ELEMENTS:
         return mock_element()
     return None
 
 
 def find_elements(by, value) -> list[MagicMock | None]:
-    """Return two mock_elements if the (by, value) pair isn't found in TEST_ELEMENTS"""
+    """Return two mock_elements if the (by, value) pair isn't found in TEST_ELEMENTS."""
     element = find_element(by, value)
     return [element, element]
 
 
 def test_add_file_to_dropzone() -> None:
-    """Ensure that element location calls are made correctly"""
+    """Ensure that element location calls are made correctly."""
     mock_driver = MagicMock(spec=webdriver.Chrome)
     mock_driver.find_element.side_effect = find_element
     mock_driver.find_elements.side_effect = find_elements
@@ -53,10 +53,10 @@ def test_add_file_to_dropzone() -> None:
 
 
 def test_add_file_to_dropzone_timeout() -> None:
-    """Ensure that timeout is raised if progress bar is not found after attempt to add file"""
+    """Ensure that timeout is raised if progress bar is not found after attempt to add file."""
 
     def find_element_unsuccessful(by: str, value: str) -> MagicMock | None:
-        """Construct the WebElement mock object, but only if matching the first two definitions in TEST_ELEMENTS"""
+        """Construct the WebElement mock object, but only if matching the first two definitions in TEST_ELEMENTS."""
         if (by, value) in [TEST_ELEMENTS[0], TEST_ELEMENTS[1]]:
             return mock_element()
         return None

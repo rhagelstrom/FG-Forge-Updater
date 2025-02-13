@@ -1,4 +1,4 @@
-"""Automation to enable uploading a new fantasygrounds mod or ext file to the FG Forge and publishing it to the Live channel"""
+"""Automation to enable uploading a new fantasygrounds mod or ext file to the FG Forge and publishing it to the Live channel."""
 
 import getpass
 import logging
@@ -24,7 +24,7 @@ CHROME_ARGS: list[str] = [
 
 
 def configure_headless_chrome() -> webdriver.ChromeOptions:
-    """Prepare and return chrome options for using selenium for testing via headless systems like Github Actions"""
+    """Prepare and return chrome options for using selenium for testing via headless systems like Github Actions."""
     options = webdriver.ChromeOptions()
     for arg in CHROME_ARGS:
         options.add_argument(arg)
