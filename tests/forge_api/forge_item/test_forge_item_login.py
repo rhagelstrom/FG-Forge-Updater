@@ -57,7 +57,7 @@ def test_csrf_extraction_missing() -> None:
 
     creds = ForgeCredentialsFactory.build()
     item = ForgeItem(creds, "1337", 1)
-    assert item.creds.get_csrf_token(mock_session, ForgeURLs()) == "None"
+    assert item.creds.get_csrf_token(mock_session, ForgeURLs()) is None
 
 
 def test_forge_item_login() -> None:

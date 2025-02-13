@@ -16,7 +16,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-from src.dropzone import DropzoneErrorHandling, add_file_to_dropzone
+from src.dropzone import add_file_to_dropzone, check_report_toast_error, check_report_dropzone_upload_error, check_report_upload_percentage
 
 
 class ForgeTransactionType(Enum):
@@ -61,14 +61,14 @@ class ForgeCredentials:
 
     @staticmethod
     def get_csrf_token(session: requestium.Session, urls: ForgeURLs) -> str | None:
-        """Retrieves the csrf token from the page header. Returns string "None" if not found."""
+        """Retrieve the csrf token from the page header. Return None if not found."""
         response = session.get(
             urls.MANAGE_CRAFT,
         )
         soup = BeautifulSoup(response.content, "html.parser")
         token_element = soup.find(attrs={"name": "csrf-token"})
         if not token_element or isinstance(token_element, NavigableString):
-            return str(token_element)
+            return None
         return str(token_element.get("content"))
 
 
@@ -132,7 +132,7 @@ class ForgeItem:
             raise TimeoutException(error_msg) from e
 
     def upload_and_publish(self, session: requestium.Session, urls: ForgeURLs, new_files: list[Path], channel: ForgeReleaseChannel) -> None:
-        """Coordinates sequential use of other class methods to upload and publish a new build to the FG Forge."""
+        """Coordinate sequential use of other class methods to upload and publish a new build to the FG Forge."""
         self.login(session, urls)
         logging.info("Uploading new build to Forge item")
         self.open_items_list(session.driver, urls)
@@ -147,17 +147,16 @@ class ForgeItem:
         self.set_build_channel(session, urls, latest_build_id, channel)
 
     def add_build(self, driver: WebDriver, new_builds: list[Path]) -> None:
-        """Uploads new build(s) to this Forge item via dropzone web element."""
+        """Upload new build(s) to this Forge item via dropzone web element."""
         for build in new_builds:
             add_file_to_dropzone(driver, self.timeout, build)
 
         submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button.click()
 
-        dropzone_errors = DropzoneErrorHandling(driver, self.timeout)
-        dropzone_errors.check_report_toast_error()
-        dropzone_errors.check_report_dropzone_upload_error()
-        dropzone_errors.check_report_upload_percentage()
+        check_report_toast_error(driver, self.timeout)
+        check_report_dropzone_upload_error(driver, self.timeout)
+        check_report_upload_percentage(driver, self.timeout)
         logging.info("Build upload complete")
 
     def get_sales(self, session: requestium.Session, urls: ForgeURLs, limit_count: int = -1) -> list:
@@ -182,14 +181,14 @@ class ForgeItem:
         return response.json()["data"]
 
     def set_build_channel(self, session: requestium.Session, urls: ForgeURLs, build_id: str, channel: ForgeReleaseChannel) -> bool:
-        """Sets the build channel of this Forge item to the specified value, returning True on 200 OK."""
+        """Set the build channel of this Forge item to the specified value, returning True on 200 OK."""
         response = session.post(
             f"{urls.API_CRAFTER_ITEMS}/{self.item_id}/builds/{build_id}/channels/{channel.value}",
         )
         return response.status_code == 200
 
     def replace_description(self, driver: WebDriver, description_text: str) -> None:
-        """Replaces the existing item description with a new HTML-formatted full description."""
+        """Replace the existing item description with a new HTML-formatted full description."""
         driver.execute_script("window.scrollTo(0, document.body.scrollTop);")
         uploads_tab = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-item-tab']")))
         uploads_tab.click()

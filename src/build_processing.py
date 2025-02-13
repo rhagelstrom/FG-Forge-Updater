@@ -8,8 +8,6 @@ import mdformat
 from bs4 import BeautifulSoup
 from markdown import markdown
 
-README = "README.md"
-
 
 def apply_styles_to_table(soup: BeautifulSoup) -> BeautifulSoup:
     """Style tables for better legibility."""
@@ -32,9 +30,9 @@ def replace_images_with_link(soup: BeautifulSoup, no_images: bool) -> BeautifulS
     return soup
 
 
-def readme_html(readme: ZipFile, no_images: bool = False) -> str:
-    """Returns an html-formatted string."""
-    markdown_text = readme.read(README).decode("UTF-8")
+def readme_html(readme: ZipFile, no_images: bool = False, readme_name: str = "README.md") -> str:
+    """Return an html-formatted string from a markdown file within a provided zip file."""
+    markdown_text = readme.read(readme_name).decode("UTF-8")
     markdown_text = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
     markdown_text = mdformat.text(markdown_text)
     html = markdown(markdown_text, extensions=["extra", "nl2br", "smarty"])
@@ -44,13 +42,13 @@ def readme_html(readme: ZipFile, no_images: bool = False) -> str:
     return str(soup)
 
 
-def get_readme(new_files: list[Path], no_images: bool = False) -> str:
-    """Parses the first README.md found in the new files and returns an html-formatted string."""
-    return next((readme_html(ZipFile(file), no_images) for file in new_files if README in ZipFile(file).namelist()), "")
+def get_readme(new_files: list[Path], no_images: bool = False, readme_name: str = "README.md") -> str:
+    """Parse the first README.md found in the new files and call readme_html() returning the result."""
+    return next((readme_html(ZipFile(file), no_images, readme_name) for file in new_files if readme_name in ZipFile(file).namelist()), "")
 
 
 def get_build(file_path: PurePath, env_file: str) -> Path:
-    """Combines PurePath and file name into a Path object, ensure that a file exists there, and returns the Path."""
+    """Combine PurePath and file name into a Path object, ensure that a file exists there, and return the Path."""
     new_file = Path(file_path, env_file)
     logging.info("File upload path determined to be: %s", new_file)
     if not new_file.is_file():
