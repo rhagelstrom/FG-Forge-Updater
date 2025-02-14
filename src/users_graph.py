@@ -4,8 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import requests
 import seaborn as sns
-from matplotlib import font_manager
-from matplotlib import rcParams
+from matplotlib import font_manager, rcParams
 
 FONT_URL = "https://github.com/google/fonts/raw/main/ofl/lexend/Lexend%5Bwght%5D.ttf?raw=true"
 

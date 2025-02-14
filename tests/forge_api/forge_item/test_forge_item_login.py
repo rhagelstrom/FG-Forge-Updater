@@ -9,9 +9,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.forge_api import ForgeItem, ForgeURLs, ForgeLoginException
+from src.forge_api import ForgeItem, ForgeLoginException, ForgeURLs
 from src.main import configure_headless_chrome
-from ..test_forge_credentials import ForgeCredentialsFactory
+from tests.forge_api.test_forge_credentials import ForgeCredentialsFactory
 
 TEST_CALLS = [
     (By.NAME, "vb_login_username"),

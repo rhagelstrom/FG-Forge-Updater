@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from selenium import webdriver
 
 import src.build_processing as build_processing
-from src.forge_api import ForgeItem, ForgeCredentials, ForgeURLs, ForgeReleaseChannel
+from src.forge_api import ForgeCredentials, ForgeItem, ForgeReleaseChannel, ForgeURLs
 from src.users_graph import graph_users
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s : %(levelname)s : %(message)s")

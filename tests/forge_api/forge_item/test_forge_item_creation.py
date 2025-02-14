@@ -3,7 +3,7 @@ from dataclasses import FrozenInstanceError
 import pytest
 
 from src.forge_api import ForgeItem
-from ..test_forge_credentials import ForgeCredentialsFactory
+from tests.forge_api.test_forge_credentials import ForgeCredentialsFactory
 
 
 def test_forge_item_creation() -> None:

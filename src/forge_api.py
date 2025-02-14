@@ -12,11 +12,11 @@ from bs4.element import NavigableString
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
-from src.dropzone import add_file_to_dropzone, check_report_toast_error, check_report_dropzone_upload_error, check_report_upload_percentage
+from src.dropzone import add_file_to_dropzone, check_report_dropzone_upload_error, check_report_toast_error, check_report_upload_percentage
 
 
 class ForgeLoginException(BaseException):
@@ -91,17 +91,17 @@ class ForgeItem:
         session.driver.get(urls.FORGE_LOGIN)
 
         try:
-            username_field = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "vb_login_username")))
-            password_field = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "vb_login_password")))
+            username_field = WebDriverWait(session.driver, self.timeout).until(ec.element_to_be_clickable((By.NAME, "vb_login_username")))
+            password_field = WebDriverWait(session.driver, self.timeout).until(ec.element_to_be_clickable((By.NAME, "vb_login_password")))
             time.sleep(0.25)
             username_field.send_keys(self.creds.username)
             password_field.send_keys(self.creds.password)
-            login_button = WebDriverWait(session.driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@class='registerbtn']")))
+            login_button = WebDriverWait(session.driver, self.timeout).until(ec.element_to_be_clickable((By.XPATH, "//a[@class='registerbtn']")))
             login_button.click()
             time.sleep(0.25)
 
             try:
-                WebDriverWait(session.driver, self.timeout).until(EC.presence_of_element_located((By.XPATH, "//div[@class='blockrow restore']")))
+                WebDriverWait(session.driver, self.timeout).until(ec.presence_of_element_located((By.XPATH, "//div[@class='blockrow restore']")))
                 error_msg = f"Attempted login as {self.creds.username} was unsuccessful"
                 raise ForgeLoginException(error_msg)
             except TimeoutException:
@@ -111,7 +111,7 @@ class ForgeItem:
 
         except TimeoutException:
             try:
-                WebDriverWait(session.driver, self.timeout).until(EC.presence_of_element_located((By.NAME, "items-table_length")))
+                WebDriverWait(session.driver, self.timeout).until(ec.presence_of_element_located((By.NAME, "items-table_length")))
                 logging.info("Already logged in")
             except TimeoutException as e:
                 error_msg = "No username or password field found, or login button is not clickable."
@@ -122,7 +122,7 @@ class ForgeItem:
         driver.get(urls.MANAGE_CRAFT)
 
         try:
-            items_per_page = Select(WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.NAME, "items-table_length"))))
+            items_per_page = Select(WebDriverWait(driver, self.timeout).until(ec.element_to_be_clickable((By.NAME, "items-table_length"))))
             items_per_page.select_by_visible_text("100")
         except TimeoutException as e:
             error_msg = "Could not load the Manage Craft page!"
@@ -131,7 +131,7 @@ class ForgeItem:
     def open_item_page(self, driver: WebDriver) -> None:
         """Open the management page for a specific forge item, raising an exception if a link matching the item_id isn't found."""
         try:
-            item_link = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
+            item_link = WebDriverWait(driver, self.timeout).until(ec.element_to_be_clickable((By.XPATH, f"//a[@data-item-id='{self.item_id}']")))
             item_link.click()
         except TimeoutException as e:
             error_msg = f"Could not find item page, is {self.item_id} the right FORGE_ITEM_ID?"
@@ -157,12 +157,12 @@ class ForgeItem:
         for build in new_builds:
             add_file_to_dropzone(driver, self.timeout, build)
 
-        submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "submit-build-button")))
+        submit_button = WebDriverWait(driver, self.timeout).until(ec.element_to_be_clickable((By.ID, "submit-build-button")))
         submit_button.click()
 
         check_report_toast_error(driver, self.timeout)
         check_report_dropzone_upload_error(driver, self.timeout)
-        check_report_upload_percentage(driver, self.timeout)
+        check_report_upload_percentage(driver)
         logging.info("Build upload complete")
 
     def get_sales(self, session: requestium.Session, urls: ForgeURLs, limit_count: int = -1) -> list:
@@ -171,7 +171,7 @@ class ForgeItem:
         response = session.post(urls.API_SALES, data=f"draw=1&length={limit_count}", headers=headers)
         sales = response.json()["data"]
 
-        def is_sale_type(sale, sale_type: ForgeTransactionType):
+        def is_sale_type(sale: dict[str, str], sale_type: ForgeTransactionType) -> bool:
             return sale["item_id"] == self.item_id and sale["transaction_type_id"] == sale_type.value
 
         sales = [sale for sale in sales if is_sale_type(sale, ForgeTransactionType.PURCHASE)]
@@ -196,10 +196,10 @@ class ForgeItem:
     def replace_description(self, driver: WebDriver, description_text: str) -> None:
         """Replace the existing item description with a new HTML-formatted full description."""
         driver.execute_script("window.scrollTo(0, document.body.scrollTop);")
-        uploads_tab = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.XPATH, "//a[@id='manage-item-tab']")))
+        uploads_tab = WebDriverWait(driver, self.timeout).until(ec.element_to_be_clickable((By.XPATH, "//a[@id='manage-item-tab']")))
         uploads_tab.click()
 
-        submit_button = WebDriverWait(driver, self.timeout).until(EC.element_to_be_clickable((By.ID, "save-item-button")))
+        submit_button = WebDriverWait(driver, self.timeout).until(ec.element_to_be_clickable((By.ID, "save-item-button")))
 
         description_field = driver.find_element(By.XPATH, "//div[@id='manage-item']").find_element(By.CLASS_NAME, "note-editable")
         description_field.clear()

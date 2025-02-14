@@ -26,14 +26,14 @@ def mock_element() -> MagicMock:
     return element
 
 
-def find_element(by: str, value: str) -> MagicMock | None:
+def find_element(by: By, value: str) -> MagicMock | None:
     """Return a mock_element if the (by, value) pair isn't found in TEST_ELEMENTS."""
     if (by, value) in TEST_ELEMENTS:
         return mock_element()
     return None
 
 
-def find_elements(by, value) -> list[MagicMock | None]:
+def find_elements(by: By, value: str) -> list[MagicMock | None]:
     """Return two mock_elements if the (by, value) pair isn't found in TEST_ELEMENTS."""
     element = find_element(by, value)
     return [element, element]

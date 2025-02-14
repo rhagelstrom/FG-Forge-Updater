@@ -1,7 +1,7 @@
 from src.main import configure_headless_chrome
 
 
-def convert_args_to_dict(args):
+def convert_args_to_dict(args: list) -> dict[str, str]:
     return {key: value.split(",") if "," in value else value for key, value in (arg.split("=") for arg in args)}
 
 
