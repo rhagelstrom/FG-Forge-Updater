@@ -30,9 +30,8 @@ def replace_images_with_link(soup: BeautifulSoup, no_images: bool) -> BeautifulS
     return soup
 
 
-def readme_html(readme: ZipFile, no_images: bool = False, readme_name: str = "README.md") -> str:
-    """Return an html-formatted string from a markdown file within a provided zip file."""
-    markdown_text = readme.read(readme_name).decode("UTF-8")
+def readme_html(markdown_text: str, no_images: bool = False) -> str:
+    """Return an html-formatted string from a string formatted as markdown."""
     markdown_text = re.sub(r"!\[]\(\..+?\)", "", markdown_text)
     markdown_text = mdformat.text(markdown_text)
     html = markdown(markdown_text, extensions=["extra", "nl2br", "smarty"])
@@ -43,8 +42,8 @@ def readme_html(readme: ZipFile, no_images: bool = False, readme_name: str = "RE
 
 
 def get_readme(new_files: list[Path], no_images: bool = False, readme_name: str = "README.md") -> str:
-    """Parse the first README.md found in the new files and call readme_html() returning the result."""
-    return next((readme_html(ZipFile(file), no_images, readme_name) for file in new_files if readme_name in ZipFile(file).namelist()), "")
+    """Read the first README.md found in the new zip files and call readme_html() returning the result."""
+    return next((readme_html(ZipFile(file).read(readme_name).decode("UTF-8"), no_images) for file in new_files if readme_name in ZipFile(file).namelist()), "")
 
 
 def get_build(file_path: PurePath, env_file: str) -> Path:
