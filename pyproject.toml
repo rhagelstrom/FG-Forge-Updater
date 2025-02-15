@@ -30,6 +30,7 @@ dev = [
     "polyfactory==2.19.0",
     "pre-commit==4.1.0",
     "pytest==8.3.4",
+    "pytest-xdist==3.6.1",
     "ruff==0.9.6",
     "types-beautifulsoup4==4.12.0.20250204",
     "types-Markdown==3.7.0.20241204",
@@ -38,6 +39,7 @@ dev = [
 ]
 github-actions = [
     "coverage==7.6.11",
+    "pytest-cov==6.0.0"
 ]
 
 [tool.ruff]
@@ -97,6 +99,12 @@ module = [
     "requestium"
 ]
 ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=src -n auto"
+testpaths = [
+    "tests",
+]
 
 [tool.coverage.run]
 branch = true
