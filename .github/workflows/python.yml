@@ -48,6 +48,12 @@ jobs:
                 uv pip install --system -e .[dev]
                 uv pip install --system -e .[github-actions]
 
+            - id: cache-pytest
+              uses: actions/cache@v4
+              with:
+                path: .pytest_cache
+                key: ${{ runner.os }}-pytest-${{ matrix.python-version }}
+
             - name: Test with pytest
               run: |
                 pytest
@@ -80,6 +86,12 @@ jobs:
               run: |
                 uv pip install --system -e .[dev]
 
+            - id: cache-ruff
+              uses: actions/cache@v4
+              with:
+                path: ruff_cache
+                key: ${{ runner.os }}-ruff-${{ matrix.python-version }}
+
             - name: Run ruff format
               run: |
                 ruff format --diff .
@@ -102,6 +114,12 @@ jobs:
             - name: Install module and dependencies
               run: |
                 uv pip install --system -e .[dev]
+
+            - id: cache-ruff
+              uses: actions/cache@v4
+              with:
+                path: ruff_cache
+                key: ${{ runner.os }}-ruff-${{ matrix.python-version }}
 
             - name: Run ruff
               run: |
@@ -148,6 +166,12 @@ jobs:
             - name: Install module and dependencies
               run: |
                 uv pip install --system -e .[dev]
+
+            - id: cache-mypy
+              uses: actions/cache@v4
+              with:
+                path: .mypy_cache
+                key: ${{ runner.os }}-mypy-${{ matrix.python-version }}
 
             - name: Run mypy
               run: |
