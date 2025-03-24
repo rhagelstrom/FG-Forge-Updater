@@ -28,7 +28,7 @@ dev = [
     "mypy==1.15.0",
     "pandas-stubs==2.2.3.241126",
     "polyfactory==2.19.0",
-    "pre-commit==4.1.0",
+    "pre-commit==4.2.0",
     "pytest-xdist==3.6.1",
     "pytest==8.3.4",
     "ruff==0.11.2",
