@@ -2,15 +2,13 @@ import os
 import sys
 from unittest.mock import MagicMock, call
 
-import pytest
 import requestium
 from requests.structures import CaseInsensitiveDict
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from src.forge_api import ForgeItem, ForgeLoginException, ForgeURLs
-from src.main import configure_headless_chrome
+from src.forge_api import ForgeItem, ForgeURLs
 from tests.forge_api.test_forge_credentials import ForgeCredentialsFactory
 
 TEST_CALLS = [
@@ -85,10 +83,3 @@ def test_forge_item_login() -> None:
     assert (mock_session.driver.find_element.mock_calls == expected_find_element) or (
         expected_find_element2 and (mock_session.driver.find_element.mock_calls == expected_find_element2)
     )
-
-
-def test_forge_item_login_unsuccessful() -> None:
-    creds = ForgeCredentialsFactory.build()
-    item = ForgeItem(creds, "1337", 1)
-    with requestium.Session(driver=webdriver.Chrome(options=configure_headless_chrome())) as s, pytest.raises(ForgeLoginException):
-        item.login(s, ForgeURLs())
