@@ -39,7 +39,7 @@ dev = [
 ]
 github-actions = [
     "coverage==7.6.12",
-    "pytest-cov==6.0.0"
+    "pytest-cov==6.0.0",
 ]
 
 [tool.ruff]
@@ -96,7 +96,7 @@ ignore = [
 
 [[tool.mypy.overrides]]
 module = [
-    "requestium"
+    "requestium",
 ]
 ignore_missing_imports = true
 
@@ -122,4 +122,10 @@ omit = [
 [tool.coverage.report]
 exclude_also = [
     "logging.info",
+]
+
+[tool.bandit]
+exclude_dirs = [
+    "tests/",
+    ".venv/",
 ]
