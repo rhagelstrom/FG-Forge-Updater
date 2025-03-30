@@ -125,6 +125,7 @@ jobs:
 
         permissions:
             pull-requests: write
+            security-events: write
 
         steps:
             - name: Harden Runner
@@ -152,6 +153,23 @@ jobs:
               with:
                   path: ruff_cache
                   key: ${{ runner.os }}-ruff-3.13-${{ github.run_id }}
+
+            - name: Generate SARIF file with ruff check
+              id: run-ruff-sarif
+              run: |
+                  ruff check --output-format=sarif -o results.sarif .
+
+            - name: Upload SARIF file as artifact
+              uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+              with:
+                  name: SARIF file
+                  path: results.sarif
+                  retention-days: 5
+
+            - name: Upload SARIF file to code scanning
+              uses: github/codeql-action/upload-sarif@1b549b9259bda1cb5ddde3b41741a82a2d15a841
+              with:
+                  sarif_file: results.sarif
 
             - name: Run ruff
               id: run-ruff
@@ -221,7 +239,7 @@ jobs:
               uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
               with:
                   path: .mypy_cache
-                  key: ${{ runner.os }}-mypy-${{ matrix.python-version }}
+                  key: ${{ runner.os }}-mypy-${{ github.run_id }}
 
             - name: Run mypy
               run: |
