@@ -100,7 +100,7 @@ jobs:
             - id: cache-ruff
               uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
               with:
-                  path: ruff_cache
+                  path: .ruff_cache
                   key: ${{ runner.os }}-ruff-3.13-${{ github.run_id }}
 
             - name: Run ruff format
@@ -151,7 +151,7 @@ jobs:
             - id: cache-ruff
               uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
               with:
-                  path: ruff_cache
+                  path: .ruff_cache
                   key: ${{ runner.os }}-ruff-3.13-${{ github.run_id }}
 
             - name: Generate SARIF file with ruff check
